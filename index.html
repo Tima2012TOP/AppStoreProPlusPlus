@@ -5,913 +5,662 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>AppStorePro+++</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  
-  :root {
-    --bg: #000;
-    --card: rgba(28,28,30,0.85);
-    --card2: rgba(44,44,46,0.7);
-    --blue: #0a84ff;
-    --text: #fff;
-    --sub: #8e8e93;
-    --border: rgba(255,255,255,0.08);
-    --glass: rgba(255,255,255,0.08);
-    --glass-border: rgba(255,255,255,0.18);
-    --radius: 18px;
-    --tab-h: 82px;
-  }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#000;
+  --card:rgba(28,28,30,0.9);
+  --card2:rgba(44,44,46,0.8);
+  --blue:#0a84ff;
+  --text:#fff;
+  --sub:#8e8e93;
+  --border:rgba(255,255,255,0.08);
+  --radius:18px;
+  --tab-h:83px;
+}
+html,body{
+  height:100%;width:100%;
+  background:#000;
+  overflow:hidden;
+  font-family:-apple-system,'SF Pro Display','Helvetica Neue',Arial,sans-serif;
+  color:#fff;
+}
+body{
+  max-width:430px;
+  margin:0 auto;
+  position:relative;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
-    max-width: 430px;
-    margin: 0 auto;
-    position: relative;
-  }
+/* ============ SCREENS ============ */
+.screen{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;
+  opacity:0;transform:translateY(30px);
+  transition:opacity .4s cubic-bezier(.4,0,.2,1),transform .4s cubic-bezier(.4,0,.2,1);
+}
+.screen.active{display:flex;opacity:1;transform:translateY(0);}
 
-  /* LIQUID GLASS */
-  .glass {
-    background: rgba(255,255,255,0.07);
-    backdrop-filter: blur(24px) saturate(1.8);
-    -webkit-backdrop-filter: blur(24px) saturate(1.8);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: var(--radius);
-  }
+/* ============ LOGIN ============ */
+#loginScreen{
+  background:linear-gradient(160deg,#060612 0%,#0d1a2e 50%,#000 100%);
+  align-items:center;justify-content:center;
+  padding:40px 24px;gap:0;
+}
+.login-logo-wrap{
+  width:96px;height:96px;
+  background:linear-gradient(135deg,#0a84ff,#5e5ce6,#bf5af2);
+  border-radius:24px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:24px;
+  box-shadow:0 0 40px rgba(10,132,255,.45),0 0 0 1px rgba(255,255,255,.15);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse{
+  0%,100%{box-shadow:0 0 40px rgba(10,132,255,.4),0 0 0 1px rgba(255,255,255,.15);}
+  50%{box-shadow:0 0 60px rgba(94,92,230,.7),0 0 0 1px rgba(255,255,255,.25);}
+}
+.login-logo-wrap svg{width:54px;height:54px;}
+.login-title{font-size:28px;font-weight:800;text-align:center;margin-bottom:6px;
+  background:linear-gradient(90deg,#fff,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.login-sub{font-size:15px;color:var(--sub);margin-bottom:36px;text-align:center;}
+.login-form{
+  width:100%;
+  background:rgba(255,255,255,0.07);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:16px;overflow:hidden;margin-bottom:16px;
+}
+.login-field{display:flex;align-items:center;padding:0 16px;height:54px;border-bottom:1px solid rgba(255,255,255,.08);}
+.login-field:last-child{border-bottom:none;}
+.login-field label{font-size:17px;color:#fff;width:90px;flex-shrink:0;}
+.login-field input{background:none;border:none;outline:none;color:#fff;font-size:17px;width:100%;caret-color:var(--blue);}
+.login-field input::placeholder{color:var(--sub);}
+.btn-primary{
+  width:100%;height:52px;
+  background:var(--blue);border:none;border-radius:14px;
+  color:#fff;font-size:17px;font-weight:600;cursor:pointer;
+  transition:all .2s;margin-bottom:12px;
+}
+.btn-primary:active{transform:scale(.97);opacity:.85;}
+.login-hint{font-size:13px;color:var(--sub);text-align:center;}
 
-  .glass-dark {
-    background: rgba(20,20,22,0.75);
-    backdrop-filter: blur(30px) saturate(2);
-    -webkit-backdrop-filter: blur(30px) saturate(2);
-    border: 1px solid rgba(255,255,255,0.10);
-    border-radius: var(--radius);
-  }
+/* ============ CONGRATS ============ */
+#congratsScreen{
+  background:linear-gradient(160deg,#060612,#0d1a2e,#000);
+  align-items:center;justify-content:center;padding:40px 24px;text-align:center;
+}
+.congrats-icon{
+  width:110px;height:110px;
+  background:linear-gradient(135deg,#0a84ff,#5e5ce6,#bf5af2);
+  border-radius:28px;display:flex;align-items:center;justify-content:center;
+  margin:0 auto 28px;
+  box-shadow:0 16px 48px rgba(10,132,255,.5);
+  animation:bounceIn .7s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes bounceIn{0%{transform:scale(.3);opacity:0;}50%{transform:scale(1.1);}70%{transform:scale(.95);}100%{transform:scale(1);opacity:1;}}
+.congrats-icon svg{width:64px;height:64px;}
+.congrats-title{font-size:26px;font-weight:800;margin-bottom:12px;
+  background:linear-gradient(90deg,#fff,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.congrats-text{font-size:15px;color:var(--sub);line-height:1.6;margin-bottom:40px;}
+.congrats-text span{color:#0a84ff;font-weight:600;}
 
-  /* SCREENS */
-  .screen {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  .screen.active {
-    display: flex;
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ============ STATUS BAR ============ */
+.status-bar{
+  height:44px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;background:#000;z-index:10;
+}
+.status-time{font-size:15px;font-weight:600;}
+.status-right{display:flex;align-items:center;gap:5px;}
 
-  /* LOGIN SCREEN */
-  #loginScreen {
-    background: linear-gradient(160deg, #0a0a1a 0%, #0d1b2a 40%, #0a0a0a 100%);
-    align-items: center;
-    justify-content: center;
-    padding: 40px 28px;
-    gap: 0;
-  }
+/* ============ MAIN APP ============ */
+#mainApp{display:none;flex-direction:column;height:100vh;position:relative;}
+#mainApp.active{display:flex;}
 
-  .login-logo {
-    width: 90px; height: 90px;
-    background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
-    border-radius: 22px;
-    display: flex; align-items: center; justify-content: center;
-    margin-bottom: 22px;
-    box-shadow: 0 8px 32px rgba(10,132,255,0.4), 0 0 0 1px rgba(255,255,255,0.15);
-    animation: logoPulse 3s ease-in-out infinite;
-  }
-  @keyframes logoPulse {
-    0%,100% { box-shadow: 0 8px 32px rgba(10,132,255,0.4), 0 0 0 1px rgba(255,255,255,0.15); }
-    50% { box-shadow: 0 12px 48px rgba(94,92,230,0.6), 0 0 0 1px rgba(255,255,255,0.25); }
-  }
+.pages-wrap{flex:1;overflow:hidden;position:relative;}
+.tab-page{
+  position:absolute;inset:0;
+  display:none;flex-direction:column;overflow:hidden;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .3s cubic-bezier(.4,0,.2,1),transform .3s cubic-bezier(.4,0,.2,1);
+}
+.tab-page.active{display:flex;opacity:1;transform:translateY(0);}
 
-  .login-logo svg { width: 52px; height: 52px; }
+.scroll-area{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding-bottom:calc(var(--tab-h) + 10px);
+  -webkit-overflow-scrolling:touch;
+  scroll-behavior:smooth;
+}
+.scroll-area::-webkit-scrollbar{display:none;}
 
-  .login-title {
-    font-size: 28px; font-weight: 800;
-    background: linear-gradient(90deg, #fff, #aaa);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    margin-bottom: 6px; text-align: center;
-  }
-  .login-sub {
-    font-size: 15px; color: var(--sub);
-    margin-bottom: 36px; text-align: center;
-  }
+/* ============ TAB BAR ============ */
+.tab-bar{
+  position:absolute;bottom:0;left:0;right:0;
+  height:var(--tab-h);
+  background:rgba(18,18,20,0.82);
+  backdrop-filter:blur(36px) saturate(3);
+  -webkit-backdrop-filter:blur(36px) saturate(3);
+  border-top:1px solid rgba(255,255,255,0.09);
+  display:flex;align-items:flex-start;padding-top:8px;
+  z-index:100;
+}
+.tab-btn{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;color:var(--sub);cursor:pointer;
+  padding:6px 0;transition:all .22s cubic-bezier(.4,0,.2,1);
+  position:relative;
+}
+.tab-btn.active{color:var(--blue);}
+.tab-btn-inner{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 14px;border-radius:16px;
+  transition:background .22s;
+}
+.tab-btn.active .tab-btn-inner{
+  background:rgba(10,132,255,0.15);
+}
+.tab-icon{width:26px;height:26px;display:flex;align-items:center;justify-content:center;}
+.tab-icon svg{width:24px;height:24px;transition:transform .22s cubic-bezier(.4,0,.2,1);}
+.tab-btn.active .tab-icon svg{transform:scale(1.12);}
+.tab-label{font-size:10px;font-weight:500;letter-spacing:0.2px;}
 
-  .login-form {
-    width: 100%;
-    background: rgba(255,255,255,0.06);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 16px;
-  }
-  .login-field {
-    display: flex; align-items: center;
-    padding: 0 16px;
-    height: 52px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    position: relative;
-  }
-  .login-field:last-child { border-bottom: none; }
-  .login-field input {
-    background: none; border: none; outline: none;
-    color: #fff; font-size: 17px; width: 100%;
-    caret-color: var(--blue);
-  }
-  .login-field input::placeholder { color: var(--sub); }
-  .login-field label {
-    font-size: 17px; color: #fff; width: 100px; flex-shrink: 0;
-  }
+/* ============ PAGE HEADER ============ */
+.page-header{
+  padding:8px 20px 4px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.page-title{font-size:34px;font-weight:800;letter-spacing:-.5px;}
+.avatar-btn{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,#636366,#48484a);
+  border-radius:50%;border:none;
+  color:#fff;font-size:13px;font-weight:700;
+  cursor:pointer;transition:transform .2s;
+}
+.avatar-btn:active{transform:scale(.92);}
 
-  .btn-primary {
-    width: 100%; height: 52px;
-    background: var(--blue);
-    border: none; border-radius: 14px;
-    color: #fff; font-size: 17px; font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-bottom: 12px;
-  }
-  .btn-primary:active { transform: scale(0.97); opacity: 0.85; }
+/* ============ HERO CARD ============ */
+.hero-card{
+  margin:8px 16px;border-radius:22px;overflow:hidden;
+  cursor:pointer;transition:transform .25s,box-shadow .25s;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+}
+.hero-card:active{transform:scale(.98);}
+.hero-placeholder{
+  width:100%;height:330px;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+}
+.hero-overlay{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:30px 20px 20px;
+  background:linear-gradient(to top,rgba(0,0,0,.88) 0%,transparent 100%);
+}
+.hero-label{font-size:11px;font-weight:700;color:rgba(255,255,255,.65);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;}
+.hero-title{font-size:28px;font-weight:800;margin-bottom:4px;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.7);}
 
-  .login-hint { font-size: 13px; color: var(--sub); text-align: center; }
+/* ============ SECTION HEADER ============ */
+.section-header{padding:18px 20px 8px;display:flex;align-items:center;justify-content:space-between;}
+.section-title{font-size:22px;font-weight:700;}
+.section-more{font-size:17px;color:var(--blue);cursor:pointer;}
 
-  /* CONGRATS SCREEN */
-  #congratsScreen {
-    background: linear-gradient(160deg, #0a0a1a 0%, #0d1b2a 40%, #0a0a0a 100%);
-    align-items: center;
-    justify-content: center;
-    padding: 40px 28px;
-    text-align: center;
-  }
+/* ============ APP LIST ============ */
+.app-list{padding:0 20px;}
+.app-row{
+  display:flex;align-items:center;padding:10px 0;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:opacity .15s;
+}
+.app-row:active{opacity:.6;}
+.app-row:last-child{border-bottom:none;}
+.app-icon-wrap{
+  width:64px;height:64px;border-radius:15px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+}
+.app-icon-wrap svg{width:38px;height:38px;}
+.app-info{flex:1;padding:0 12px;min-width:0;}
+.app-name{font-size:17px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.app-desc{font-size:13px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.app-desc2{font-size:11px;color:var(--sub);margin-top:2px;}
+.dl-btn{
+  background:rgba(255,255,255,0.13);
+  border:none;border-radius:20px;
+  color:var(--blue);font-size:15px;font-weight:600;
+  padding:7px 18px;cursor:pointer;
+  transition:all .2s;white-space:nowrap;flex-shrink:0;
+  font-family:inherit;
+}
+.dl-btn:active{transform:scale(.92);}
+.dl-btn.open-state{color:var(--blue);}
 
-  .congrats-icon {
-    width: 110px; height: 110px;
-    background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
-    border-radius: 26px;
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 28px;
-    box-shadow: 0 16px 48px rgba(10,132,255,0.5);
-    animation: bounceIn 0.6s cubic-bezier(.36,.07,.19,.97);
-  }
-  @keyframes bounceIn {
-    0% { transform: scale(0.3); opacity: 0; }
-    50% { transform: scale(1.1); }
-    70% { transform: scale(0.95); }
-    100% { transform: scale(1); opacity: 1; }
-  }
-  .congrats-icon svg { width: 64px; height: 64px; }
+/* ============ H-SCROLL ============ */
+.h-scroll{
+  display:flex;overflow-x:auto;gap:14px;
+  padding:0 20px 10px;scrollbar-width:none;
+}
+.h-scroll::-webkit-scrollbar{display:none;}
+.app-card-sm{
+  flex-shrink:0;width:96px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  cursor:pointer;transition:transform .2s;
+}
+.app-card-sm:active{transform:scale(.93);}
+.app-card-sm .app-icon-wrap{width:74px;height:74px;border-radius:17px;}
+.app-card-sm .app-name{font-size:12px;text-align:center;white-space:normal;line-height:1.3;color:#fff;}
 
-  .congrats-title {
-    font-size: 26px; font-weight: 800; margin-bottom: 12px;
-    background: linear-gradient(90deg, #fff 0%, #aaa 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .congrats-text {
-    font-size: 16px; color: var(--sub); line-height: 1.5; margin-bottom: 40px;
-  }
-  .congrats-text span { color: #0a84ff; font-weight: 600; }
+/* ============ CHIPS ============ */
+.chips{display:flex;gap:8px;padding:10px 20px;overflow-x:auto;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  background:rgba(44,44,46,0.8);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:20px;padding:7px 14px;
+  font-size:14px;font-weight:500;white-space:nowrap;
+  cursor:pointer;display:flex;align-items:center;gap:6px;
+  transition:all .2s;color:#fff;
+  backdrop-filter:blur(10px);
+}
+.chip:active{transform:scale(.95);}
 
-  /* STATUS BAR */
-  .status-bar {
-    height: 44px;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 20px;
-    flex-shrink: 0;
-    z-index: 10;
-  }
-  .status-time { font-size: 15px; font-weight: 600; }
-  .status-icons { display: flex; align-items: center; gap: 6px; }
-  .status-icons svg { width: 16px; height: 12px; }
+/* ============ SEARCH BAR ============ */
+.search-bar{
+  margin:8px 16px 4px;
+  background:rgba(118,118,128,.22);
+  border-radius:12px;display:flex;align-items:center;
+  padding:9px 14px;gap:8px;
+}
+.search-bar input{
+  flex:1;background:none;border:none;outline:none;
+  color:#fff;font-size:17px;caret-color:var(--blue);
+  font-family:inherit;
+}
+.search-bar input::placeholder{color:var(--sub);}
 
-  /* TAB BAR */
-  .tab-bar {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: var(--tab-h);
-    background: rgba(20,20,22,0.78);
-    backdrop-filter: blur(30px) saturate(2.5);
-    -webkit-backdrop-filter: blur(30px) saturate(2.5);
-    border-top: 1px solid rgba(255,255,255,0.10);
-    display: flex; align-items: flex-start;
-    padding-top: 10px;
-    z-index: 100;
-  }
+/* ============ FEATURE BANNER ============ */
+.feature-banner{
+  margin:4px 16px;border-radius:22px;overflow:hidden;
+  cursor:pointer;transition:transform .25s;
+}
+.feature-banner:active{transform:scale(.98);}
 
-  .tab-btn {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; gap: 4px;
-    cursor: pointer; padding: 4px 0;
-    transition: all 0.25s;
-    background: none; border: none; color: var(--sub);
-  }
-  .tab-btn.active { color: var(--blue); }
-  .tab-btn svg { width: 24px; height: 24px; }
-  .tab-btn span { font-size: 10px; font-weight: 500; }
+/* ============ ARCADE ============ */
+.arcade-grid-bg{
+  position:absolute;bottom:0;left:0;right:0;height:100px;
+  background:
+    repeating-linear-gradient(90deg,rgba(0,80,255,.12) 0,rgba(0,80,255,.12) 1px,transparent 1px,transparent 44px),
+    repeating-linear-gradient(0deg,rgba(0,80,255,.12) 0,rgba(0,80,255,.12) 1px,transparent 1px,transparent 44px);
+  transform:perspective(200px) rotateX(35deg);
+  transform-origin:bottom;
+}
 
-  /* SCROLL CONTENT */
-  .scroll-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding-bottom: calc(var(--tab-h) + 10px);
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-  }
-  .scroll-content::-webkit-scrollbar { display: none; }
+/* ============ ACCOUNT MODAL ============ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(0,0,0,.55);
+  display:none;align-items:flex-end;
+  backdrop-filter:blur(6px);
+}
+.modal-overlay.open{display:flex;}
+.account-sheet{
+  width:100%;max-height:92vh;
+  background:rgba(16,16,18,0.97);
+  backdrop-filter:blur(36px);
+  border-radius:22px 22px 0 0;
+  overflow-y:auto;padding-bottom:36px;
+  transform:translateY(100%);
+  transition:transform .4s cubic-bezier(.4,0,.2,1);
+  border-top:1px solid rgba(255,255,255,.1);
+}
+.account-sheet.open{transform:translateY(0);}
+.account-sheet::-webkit-scrollbar{display:none;}
+.sheet-header{display:flex;align-items:center;justify-content:space-between;padding:20px 20px 16px;}
+.sheet-title-row{display:flex;align-items:center;gap:10px;}
+.sheet-title{font-size:18px;font-weight:600;}
+.close-btn{
+  width:34px;height:34px;
+  background:rgba(118,118,128,.3);border-radius:50%;border:none;
+  color:#fff;font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:transform .2s;
+}
+.close-btn:active{transform:scale(.9);}
+.acc-card{margin:0 16px 14px;background:rgba(44,44,46,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;}
+.acc-row{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,.07);cursor:pointer;transition:opacity .15s;
+}
+.acc-row:active{opacity:.6;}
+.acc-row:last-child{border-bottom:none;}
+.acc-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;}
+.acc-info{flex:1;}
+.acc-name{font-size:17px;font-weight:500;}
+.acc-sub{font-size:13px;color:var(--sub);margin-top:2px;}
+.chevron{color:var(--sub);font-size:16px;}
+.menu-card{margin:0 16px 14px;background:rgba(44,44,46,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;}
+.menu-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.07);
+  cursor:pointer;transition:opacity .15s;
+}
+.menu-row:active{opacity:.6;}
+.menu-row:last-child{border-bottom:none;}
+.menu-label{font-size:17px;}
+.region-card{margin:0 16px 14px;background:rgba(44,44,46,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px 16px;}
+.region-label{font-size:12px;color:var(--sub);margin-bottom:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;}
+.region-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.region-chip{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);
+  border-radius:20px;padding:6px 14px;font-size:14px;cursor:pointer;
+  transition:all .22s;color:#fff;
+}
+.region-chip.sel{background:var(--blue);border-color:var(--blue);}
+.region-chip:active{transform:scale(.93);}
+.sheet-actions{display:flex;margin:0 16px;background:rgba(44,44,46,.7);border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;}
+.sheet-action{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:14px 8px;border-right:1px solid rgba(255,255,255,.07);
+  cursor:pointer;border:none;background:none;color:var(--blue);
+  font-size:12px;font-weight:500;transition:opacity .15s;font-family:inherit;
+}
+.sheet-action:last-child{border-right:none;}
+.sheet-action:active{opacity:.6;}
+.sheet-action svg{width:22px;height:22px;}
 
-  /* PAGE HEADER */
-  .page-header {
-    padding: 8px 20px 4px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .page-title { font-size: 34px; font-weight: 800; }
-  .avatar-btn {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, #636366, #48484a);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 700; color: #fff;
-    cursor: pointer; border: none;
-    transition: transform 0.2s;
-  }
-  .avatar-btn:active { transform: scale(0.92); }
+/* ============ APP DETAIL ============ */
+#appDetailOverlay{
+  position:fixed;inset:0;z-index:150;
+  display:none;flex-direction:column;
+  background:#000;
+  transform:translateY(100%);
+  transition:transform .42s cubic-bezier(.4,0,.2,1);
+}
+#appDetailOverlay.open{display:flex;transform:translateY(0);}
+.detail-topbar{
+  display:flex;align-items:center;padding:14px 20px 0;
+  background:#000;flex-shrink:0;
+}
+.detail-back{
+  background:none;border:none;color:var(--blue);
+  font-size:17px;cursor:pointer;display:flex;align-items:center;gap:4px;
+  font-family:inherit;padding:4px 0;
+}
+.detail-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+.detail-scroll::-webkit-scrollbar{display:none;}
+.detail-hero-row{padding:24px 20px 16px;display:flex;gap:16px;align-items:flex-start;}
+.detail-big-icon{
+  width:114px;height:114px;border-radius:26px;
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;
+  box-shadow:0 8px 28px rgba(0,0,0,.5);
+}
+.detail-big-icon svg{width:64px;height:64px;}
+.detail-meta{flex:1;}
+.detail-app-name{font-size:22px;font-weight:800;line-height:1.2;margin-bottom:4px;}
+.detail-app-sub{font-size:14px;color:var(--sub);margin-bottom:14px;line-height:1.4;}
+.install-btn{
+  background:var(--blue);border:none;border-radius:22px;
+  color:#fff;font-size:16px;font-weight:600;
+  padding:9px 30px;cursor:pointer;transition:all .2s;
+  font-family:inherit;
+}
+.install-btn:active{transform:scale(.93);}
+.install-btn.installed{background:rgba(10,132,255,.18);color:var(--blue);}
+.prog-wrap{width:100%;height:4px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:10px;overflow:hidden;display:none;}
+.prog-bar{height:100%;background:var(--blue);border-radius:2px;width:0%;transition:width .08s linear;}
+.detail-stats{display:flex;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:20px;}
+.stat-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:12px 4px;border-right:1px solid var(--border);}
+.stat-item:last-child{border-right:none;}
+.stat-val{font-size:16px;font-weight:700;}
+.stat-key{font-size:11px;color:var(--sub);margin-top:2px;}
+.screenshots{display:flex;gap:10px;padding:0 20px 20px;overflow-x:auto;scrollbar-width:none;}
+.screenshots::-webkit-scrollbar{display:none;}
+.screenshot{
+  width:155px;height:274px;flex-shrink:0;border-radius:14px;
+  background:linear-gradient(135deg,#1c1c3e,#2d1b69);
+  display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.1);overflow:hidden;position:relative;
+}
+.screenshot svg{width:80px;height:80px;opacity:.7;}
+.detail-desc{padding:0 20px 20px;font-size:15px;line-height:1.65;color:rgba(255,255,255,.85);}
+.detail-desc-title{font-size:20px;font-weight:700;margin-bottom:10px;color:#fff;}
+.info-table{margin:0 20px 20px;background:rgba(44,44,46,.5);border-radius:14px;border:1px solid rgba(255,255,255,.08);overflow:hidden;}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.06);}
+.info-row:last-child{border-bottom:none;}
+.info-key{font-size:14px;color:var(--sub);}
+.info-val{font-size:14px;}
+.reviews-section{padding:0 20px 20px;}
+.review-title{font-size:20px;font-weight:700;margin-bottom:12px;}
+.review-card{background:rgba(44,44,46,.45);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:14px;margin-bottom:10px;}
+.review-top{display:flex;justify-content:space-between;margin-bottom:6px;}
+.review-author{font-size:14px;font-weight:600;}
+.review-stars{color:#ffd60a;font-size:13px;}
+.review-text{font-size:14px;color:rgba(255,255,255,.8);line-height:1.45;}
 
-  /* HERO CARD */
-  .hero-card {
-    margin: 8px 16px;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.25s;
-  }
-  .hero-card:active { transform: scale(0.98); }
-  .hero-img {
-    width: 100%; height: 340px;
-    object-fit: cover;
-    display: block;
-  }
-  .hero-img-placeholder {
-    width: 100%; height: 340px;
-    background: linear-gradient(135deg, #1c1c3e 0%, #2d1b69 40%, #6b21a8 70%, #4c1d95 100%);
-    position: relative;
-    overflow: hidden;
-  }
-  .hero-img-placeholder::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 70% 30%, rgba(139,92,246,0.6), transparent 60%),
-                radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.4), transparent 50%);
-  }
-  .hero-overlay {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    padding: 24px 20px 20px;
-    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
-  }
-  .hero-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .hero-title { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-  .hero-sub { font-size: 15px; color: rgba(255,255,255,0.7); }
+/* ============ CONFIRM MODAL ============ */
+#confirmModal{
+  position:fixed;inset:0;z-index:250;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  display:none;align-items:center;justify-content:center;padding:24px;
+}
+#confirmModal.open{display:flex;}
+.confirm-box{
+  width:100%;max-width:340px;
+  background:rgba(28,28,30,.98);backdrop-filter:blur(30px);
+  border:1px solid rgba(255,255,255,.12);border-radius:20px;
+  overflow:hidden;
+  animation:scaleIn .3s cubic-bezier(.4,0,.2,1);
+}
+@keyframes scaleIn{from{transform:scale(.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.confirm-top{padding:24px 20px 16px;text-align:center;}
+.confirm-icon{
+  width:64px;height:64px;border-radius:16px;
+  margin:0 auto 14px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(0,0,0,.4);
+}
+.confirm-icon svg{width:36px;height:36px;}
+.confirm-title{font-size:19px;font-weight:700;margin-bottom:6px;}
+.confirm-text{font-size:14px;color:var(--sub);line-height:1.5;}
+.confirm-actions{display:flex;border-top:1px solid rgba(255,255,255,.08);}
+.confirm-cancel{
+  flex:1;padding:16px;background:none;border:none;border-right:1px solid rgba(255,255,255,.08);
+  color:var(--sub);font-size:17px;cursor:pointer;font-family:inherit;transition:opacity .15s;
+}
+.confirm-cancel:active{opacity:.6;}
+.confirm-ok{
+  flex:1;padding:16px;background:none;border:none;
+  color:var(--blue);font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;transition:opacity .15s;
+}
+.confirm-ok:active{opacity:.6;}
 
-  /* SECTION HEADER */
-  .section-header {
-    padding: 20px 20px 10px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .section-title { font-size: 22px; font-weight: 700; }
-  .section-more { font-size: 17px; color: var(--blue); cursor: pointer; }
+/* ============ PROFILE DOWNLOAD ============ */
+#profileModal{
+  position:fixed;inset:0;z-index:260;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:24px;
+}
+#profileModal.open{display:flex;}
+.profile-box{
+  width:100%;max-width:340px;
+  background:rgba(28,28,30,.99);backdrop-filter:blur(30px);
+  border:1px solid rgba(255,255,255,.12);border-radius:20px;
+  overflow:hidden;animation:scaleIn .3s cubic-bezier(.4,0,.2,1);
+}
+.profile-top{padding:28px 20px 20px;text-align:center;}
+.profile-logo{
+  width:72px;height:72px;border-radius:18px;
+  margin:0 auto 16px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.profile-logo svg{width:40px;height:40px;}
+.profile-title{font-size:20px;font-weight:700;margin-bottom:6px;}
+.profile-sub{font-size:14px;color:var(--sub);line-height:1.5;}
+.profile-info{margin:0 20px 20px;background:rgba(44,44,46,.6);border-radius:14px;padding:14px 16px;}
+.profile-info-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.profile-info-row:last-child{border-bottom:none;}
+.profile-info-key{font-size:14px;color:var(--sub);}
+.profile-info-val{font-size:14px;font-weight:500;}
+.profile-dl-progress{margin:0 20px 16px;}
+.profile-dl-label{font-size:13px;color:var(--sub);margin-bottom:6px;display:flex;justify-content:space-between;}
+.profile-prog-wrap{height:6px;background:rgba(255,255,255,.1);border-radius:3px;overflow:hidden;}
+.profile-prog-bar{height:100%;background:var(--blue);border-radius:3px;width:0%;transition:width .08s linear;}
+.profile-actions{display:flex;border-top:1px solid rgba(255,255,255,.08);}
+.profile-cancel-btn{flex:1;padding:16px;background:none;border:none;border-right:1px solid rgba(255,255,255,.08);color:var(--sub);font-size:17px;cursor:pointer;font-family:inherit;}
+.profile-install-btn{flex:1;padding:16px;background:none;border:none;color:var(--blue);font-size:17px;font-weight:600;cursor:pointer;font-family:inherit;}
 
-  /* APP LIST */
-  .app-list { padding: 0 20px; }
-  .app-row {
-    display: flex; align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .app-row:active { opacity: 0.6; }
-  .app-row:last-child { border-bottom: none; }
-  .app-icon {
-    width: 62px; height: 62px;
-    border-radius: 14px;
-    flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-    overflow: hidden;
-    background: #1c1c1e;
-  }
-  .app-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
-  .app-info { flex: 1; padding: 0 12px; }
-  .app-name { font-size: 17px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .app-desc { font-size: 13px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .app-desc-small { font-size: 11px; color: var(--sub); margin-top: 2px; }
-  .dl-btn {
-    background: rgba(255,255,255,0.12);
-    border: none; border-radius: 20px;
-    color: var(--blue); font-size: 15px; font-weight: 600;
-    padding: 6px 18px; cursor: pointer;
-    transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
-  }
-  .dl-btn:active { transform: scale(0.92); }
+/* ============ NOTIFICATION ============ */
+.notif{
+  position:fixed;top:56px;left:16px;right:16px;z-index:300;
+  background:rgba(28,28,30,.95);backdrop-filter:blur(24px);
+  border:1px solid rgba(255,255,255,.1);border-radius:16px;
+  padding:12px 16px;display:flex;align-items:center;gap:12px;
+  transform:translateY(-130px);transition:transform .4s cubic-bezier(.36,.07,.19,.97);
+  box-shadow:0 8px 32px rgba(0,0,0,.45);
+}
+.notif.show{transform:translateY(0);}
+.notif-icon-wrap{
+  width:42px;height:42px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.notif-icon-wrap svg{width:24px;height:24px;}
+.notif-body{flex:1;}
+.notif-title{font-size:14px;font-weight:600;}
+.notif-sub{font-size:13px;color:var(--sub);}
 
-  /* HORIZONTAL SCROLL */
-  .h-scroll {
-    display: flex;
-    overflow-x: auto;
-    gap: 14px;
-    padding: 0 20px 10px;
-    scrollbar-width: none;
-  }
-  .h-scroll::-webkit-scrollbar { display: none; }
+/* ============ GRADIENT PRESETS ============ */
+.g-blue{background:linear-gradient(135deg,#0a2a5e,#0a84ff);}
+.g-green{background:linear-gradient(135deg,#0a3a12,#30d158);}
+.g-red{background:linear-gradient(135deg,#4a0a0a,#ff453a);}
+.g-orange{background:linear-gradient(135deg,#4a2200,#ff9f0a);}
+.g-purple{background:linear-gradient(135deg,#2a0a5e,#bf5af2);}
+.g-pink{background:linear-gradient(135deg,#4a0a28,#ff375f);}
+.g-teal{background:linear-gradient(135deg,#0a2e38,#40c8e0);}
+.g-indigo{background:linear-gradient(135deg,#1a0a4a,#5e5ce6);}
+.g-yellow{background:linear-gradient(135deg,#3a2800,#ffd60a);}
+.g-dark{background:linear-gradient(135deg,#1c1c1e,#3a3a3c);}
+.g-cyan{background:linear-gradient(135deg,#003038,#00c7be);}
+.g-brown{background:linear-gradient(135deg,#2a1800,#ac8e68);}
 
-  /* APP CARD small */
-  .app-card-sm {
-    flex-shrink: 0; width: 100px;
-    display: flex; flex-direction: column; align-items: center; gap: 6px;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .app-card-sm:active { transform: scale(0.93); }
-  .app-card-sm .app-icon { width: 72px; height: 72px; }
-  .app-card-sm .app-name { font-size: 12px; text-align: center; white-space: normal; line-height: 1.3; }
+/* Floating animation for arcade */
+@keyframes fl1{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@keyframes fl2{0%,100%{transform:translateY(-6px);}50%{transform:translateY(4px);}}
+@keyframes fl3{0%,100%{transform:translateY(4px);}50%{transform:translateY(-8px);}}
 
-  /* CHIPS */
-  .chips {
-    display: flex; gap: 8px;
-    padding: 10px 20px;
-    overflow-x: auto; scrollbar-width: none;
-  }
-  .chips::-webkit-scrollbar { display: none; }
-  .chip {
-    background: var(--card2);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 7px 16px;
-    font-size: 14px; font-weight: 500;
-    white-space: nowrap; cursor: pointer;
-    display: flex; align-items: center; gap: 6px;
-    transition: all 0.2s;
-  }
-  .chip:active { transform: scale(0.95); }
+/* Shimmer */
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.shimmer-overlay{position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer .9s infinite;}
 
-  /* FEATURED BANNER */
-  .feature-banner {
-    margin: 4px 16px;
-    border-radius: 20px;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.25s;
-  }
-  .feature-banner:active { transform: scale(0.98); }
-  .banner-inner {
-    padding: 16px;
-    background: linear-gradient(135deg, rgba(28,28,60,0.9), rgba(60,28,90,0.9));
-    backdrop-filter: blur(10px);
-  }
-  .banner-label { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
-  .banner-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
-  .banner-sub { font-size: 14px; color: var(--sub); margin-bottom: 12px; }
+/* Spin */
+@keyframes spin{to{transform:rotate(360deg);}}
+.spin{animation:spin .7s linear infinite;}
 
-  /* ARCADE SCREEN */
-  .arcade-hero {
-    height: 300px;
-    background: linear-gradient(180deg, #3d0c02 0%, #1a0800 50%, #000 100%);
-    position: relative;
-    overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .arcade-grid {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
-    background: repeating-linear-gradient(90deg, rgba(0,80,255,0.15) 0, rgba(0,80,255,0.15) 1px, transparent 1px, transparent 40px),
-                repeating-linear-gradient(0deg, rgba(0,80,255,0.15) 0, rgba(0,80,255,0.15) 1px, transparent 1px, transparent 40px);
-    background-size: 40px 40px;
-    perspective: 300px;
-    transform: rotateX(40deg);
-    transform-origin: bottom;
-  }
-  .arcade-title-section {
-    text-align: center; padding: 30px 20px;
-  }
-  .arcade-logo { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #fff; }
-  .arcade-logo-icon { font-size: 22px; }
-  .arcade-headline { font-size: 26px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
-  .arcade-offer-btn {
-    width: 100%; height: 52px;
-    background: var(--blue); border: none;
-    border-radius: 14px; color: #fff;
-    font-size: 18px; font-weight: 600;
-    cursor: pointer; margin-bottom: 10px;
-    transition: all 0.2s;
-  }
-  .arcade-offer-btn:active { transform: scale(0.97); }
-  .arcade-hint { font-size: 13px; color: var(--sub); }
+/* Pulse dot */
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
 
-  /* SEARCH SCREEN */
-  .search-bar {
-    margin: 8px 16px 4px;
-    background: rgba(118,118,128,0.22);
-    border-radius: 12px;
-    display: flex; align-items: center;
-    padding: 8px 14px; gap: 8px;
-  }
-  .search-bar input {
-    flex: 1; background: none; border: none; outline: none;
-    color: #fff; font-size: 17px;
-    caret-color: var(--blue);
-  }
-  .search-bar input::placeholder { color: var(--sub); }
-  .search-bar svg { color: var(--sub); flex-shrink: 0; }
+/* Shake */
+@keyframes shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-6px);}80%{transform:translateX(6px);}}
 
-  /* ACCOUNT MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; z-index: 200;
-    background: rgba(0,0,0,0.5);
-    display: none; align-items: flex-end;
-    backdrop-filter: blur(4px);
-    transition: opacity 0.3s;
-  }
-  .modal-overlay.open { display: flex; }
-
-  .account-sheet {
-    width: 100%; max-height: 92vh;
-    background: rgba(18,18,20,0.95);
-    backdrop-filter: blur(30px);
-    border-radius: 20px 20px 0 0;
-    overflow-y: auto;
-    padding-bottom: 40px;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(.4,0,.2,1);
-    border-top: 1px solid rgba(255,255,255,0.1);
-  }
-  .account-sheet.open { transform: translateY(0); }
-  .account-sheet::-webkit-scrollbar { display: none; }
-
-  .sheet-header {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 20px 16px;
-  }
-  .sheet-title-row { display: flex; align-items: center; gap: 12px; }
-  .sheet-title { font-size: 18px; font-weight: 600; }
-  .close-btn {
-    width: 34px; height: 34px;
-    background: rgba(118,118,128,0.3);
-    border-radius: 50%; border: none;
-    color: #fff; font-size: 16px; font-weight: 600;
-    cursor: pointer; display: flex; align-items: center; justify-content: center;
-    transition: transform 0.2s;
-  }
-  .close-btn:active { transform: scale(0.9); }
-
-  .account-card {
-    margin: 0 16px 16px;
-    background: rgba(44,44,46,0.7);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  .account-row {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .account-row:active { opacity: 0.6; }
-  .account-row:last-child { border-bottom: none; }
-  .account-avatar {
-    width: 44px; height: 44px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; font-weight: 700;
-  }
-  .account-info { flex: 1; }
-  .account-name { font-size: 17px; font-weight: 500; }
-  .account-sub { font-size: 13px; color: var(--sub); margin-top: 2px; }
-  .chevron { color: var(--sub); font-size: 14px; }
-
-  .menu-card {
-    margin: 0 16px 16px;
-    background: rgba(44,44,46,0.7);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  .menu-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-  .menu-row:active { opacity: 0.6; }
-  .menu-row:last-child { border-bottom: none; }
-  .menu-label { font-size: 17px; }
-
-  /* REGION SELECTOR */
-  .region-card {
-    margin: 0 16px 16px;
-    background: rgba(44,44,46,0.7);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    padding: 14px 16px;
-  }
-  .region-label { font-size: 13px; color: var(--sub); margin-bottom: 10px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
-  .region-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .region-chip {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 20px;
-    padding: 6px 14px;
-    font-size: 14px; cursor: pointer;
-    transition: all 0.25s;
-  }
-  .region-chip.selected {
-    background: var(--blue); border-color: var(--blue); color: #fff;
-  }
-  .region-chip:active { transform: scale(0.93); }
-
-  /* SHEET ACTIONS */
-  .sheet-actions {
-    display: flex; gap: 0;
-    margin: 0 16px;
-    background: rgba(44,44,46,0.7);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 16px;
-    overflow: hidden;
-  }
-  .sheet-action {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; gap: 4px;
-    padding: 14px 8px;
-    border-right: 1px solid rgba(255,255,255,0.07);
-    cursor: pointer; border: none; background: none;
-    color: var(--blue); font-size: 13px;
-    transition: opacity 0.15s;
-  }
-  .sheet-action:last-child { border-right: none; }
-  .sheet-action:active { opacity: 0.6; }
-  .sheet-action svg { width: 22px; height: 22px; }
-
-  /* APP DETAIL */
-  #appDetailOverlay {
-    position: fixed; inset: 0; z-index: 150;
-    display: none;
-    background: #000;
-    flex-direction: column;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(.4,0,.2,1);
-  }
-  #appDetailOverlay.open {
-    display: flex;
-    transform: translateY(0);
-  }
-
-  .detail-header {
-    padding: 16px 20px 0;
-    display: flex; align-items: center; gap: 12px;
-  }
-  .detail-back {
-    background: none; border: none; color: var(--blue);
-    font-size: 17px; cursor: pointer;
-    display: flex; align-items: center; gap: 4px;
-    padding: 4px 0;
-  }
-  .detail-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-  .detail-scroll::-webkit-scrollbar { display: none; }
-
-  .detail-hero {
-    padding: 24px 20px 16px;
-    display: flex; gap: 16px; align-items: flex-start;
-  }
-  .detail-icon {
-    width: 110px; height: 110px; border-radius: 24px;
-    flex-shrink: 0; display: flex; align-items: center;
-    justify-content: center; font-size: 50px;
-    background: #1c1c1e;
-  }
-  .detail-meta { flex: 1; }
-  .detail-app-name { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 4px; }
-  .detail-app-sub { font-size: 14px; color: var(--sub); margin-bottom: 12px; }
-  .install-btn {
-    background: var(--blue); border: none;
-    border-radius: 20px; color: #fff;
-    font-size: 16px; font-weight: 600;
-    padding: 8px 28px; cursor: pointer;
-    transition: all 0.2s;
-  }
-  .install-btn:active { transform: scale(0.93); }
-  .install-btn.installing { background: rgba(255,255,255,0.15); color: var(--sub); }
-  .install-btn.installed { background: rgba(10,132,255,0.2); color: var(--blue); }
-
-  .detail-stats {
-    display: flex; padding: 0 20px; gap: 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 20px;
-  }
-  .stat-item {
-    flex: 1; display: flex; flex-direction: column;
-    align-items: center; padding: 12px 8px;
-    border-right: 1px solid var(--border);
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-val { font-size: 16px; font-weight: 700; }
-  .stat-key { font-size: 11px; color: var(--sub); margin-top: 2px; }
-
-  .screenshots {
-    padding: 0 20px 20px;
-    display: flex; gap: 10px; overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .screenshots::-webkit-scrollbar { display: none; }
-  .screenshot {
-    width: 160px; height: 280px; flex-shrink: 0;
-    border-radius: 14px;
-    background: linear-gradient(135deg, #1c1c3e, #2d1b69);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 40px; overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.1);
-    position: relative;
-  }
-
-  .detail-desc {
-    padding: 0 20px 20px;
-    font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.85);
-  }
-  .detail-desc-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-
-  /* PROGRESS BAR */
-  .progress-wrap {
-    width: 100%; height: 4px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 2px; margin-top: 8px; overflow: hidden;
-  }
-  .progress-bar {
-    height: 100%; background: var(--blue);
-    border-radius: 2px; width: 0%;
-    transition: width 0.1s linear;
-  }
-
-  /* HOME SCREEN APPS */
-  #homeScreenOverlay {
-    position: fixed; inset: 0; z-index: 140;
-    display: none;
-    background: linear-gradient(160deg, #0a0018 0%, #0a1028 50%, #000 100%);
-    flex-direction: column;
-  }
-  #homeScreenOverlay.open { display: flex; }
-
-  .home-status { padding: 12px 24px 4px; display: flex; justify-content: space-between; }
-  .home-time { font-size: 42px; font-weight: 200; }
-  .home-date { font-size: 17px; color: rgba(255,255,255,0.7); margin-bottom: 16px; padding-left: 24px; }
-
-  .home-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 18px 8px;
-    padding: 16px 16px;
-    flex: 1; overflow-y: auto;
-    align-content: start;
-  }
-  .home-grid::-webkit-scrollbar { display: none; }
-
-  .home-app {
-    display: flex; flex-direction: column; align-items: center; gap: 5px;
-    cursor: pointer; transition: transform 0.2s;
-  }
-  .home-app:active { transform: scale(0.88); }
-  .home-app-icon {
-    width: 68px; height: 68px; border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px;
-    background: #1c1c1e;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    position: relative;
-    overflow: hidden;
-  }
-  .home-app-icon.installing-anim::after {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
-    animation: shimmer 1s infinite;
-  }
-  @keyframes shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-  }
-  .home-app-name { font-size: 11px; text-align: center; color: #fff; line-height: 1.2; }
-
-  .home-dock {
-    margin: 0 16px 20px;
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(30px);
-    border-radius: 22px;
-    padding: 10px;
-    display: flex; justify-content: center; gap: 12px;
-    border: 1px solid rgba(255,255,255,0.15);
-  }
-  .dock-app {
-    width: 60px; height: 60px; border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px; cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .dock-app:active { transform: scale(0.88); }
-
-  .home-back-btn {
-    position: absolute; top: 60px; right: 20px;
-    background: rgba(255,255,255,0.15);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 20px;
-    padding: 8px 16px;
-    color: #fff; font-size: 14px;
-    cursor: pointer;
-  }
-
-  /* NOTIFICATION */
-  .notification {
-    position: fixed; top: 60px; left: 16px; right: 16px;
-    z-index: 300;
-    background: rgba(30,30,32,0.92);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px;
-    padding: 12px 16px;
-    display: flex; align-items: center; gap: 12px;
-    transform: translateY(-120px);
-    transition: transform 0.4s cubic-bezier(.36,.07,.19,.97);
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  }
-  .notification.show { transform: translateY(0); }
-  .notif-icon {
-    width: 40px; height: 40px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; background: var(--blue); flex-shrink: 0;
-  }
-  .notif-text { flex: 1; }
-  .notif-title { font-size: 14px; font-weight: 600; }
-  .notif-sub { font-size: 13px; color: var(--sub); }
-
-  /* GAMES SCREEN (Arcade-like) */
-  .games-hero {
-    height: 200px;
-    background: linear-gradient(135deg, #0a0a1a, #1a0828);
-    display: flex; align-items: flex-end; padding: 20px;
-  }
-
-  /* SEPARATOR */
-  .sep { height: 1px; background: var(--border); margin: 0 20px; }
-
-  /* LOADING SPINNER */
-  .spinner {
-    width: 20px; height: 20px;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-top-color: var(--blue);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    display: inline-block;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* INSTALLED BADGE */
-  .installed-badge {
-    position: absolute; top: -4px; right: -4px;
-    width: 18px; height: 18px;
-    background: #30d158;
-    border-radius: 50%;
-    border: 2px solid #000;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 10px; color: #fff; font-weight: 700;
-  }
-
-  /* MAIN APP WRAPPER */
-  #mainApp { display: none; flex-direction: column; height: 100vh; position: relative; }
-  #mainApp.active { display: flex; }
-
-  /* TAB PAGES */
-  .tab-page { display: none; flex: 1; overflow: hidden; flex-direction: column; }
-  .tab-page.active { display: flex; }
-
-  /* SEARCH RESULTS */
-  .search-results { display: none; }
-  .search-results.active { display: block; }
-
-  /* ANIMATIONS */
-  @keyframes fadeSlideUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .animated { animation: fadeSlideUp 0.4s cubic-bezier(.4,0,.2,1) both; }
-
-  /* GRADIENT CARDS */
-  .grad-purple { background: linear-gradient(135deg, #2d1b69, #5e5ce6); }
-  .grad-blue { background: linear-gradient(135deg, #0a3069, #0a84ff); }
-  .grad-green { background: linear-gradient(135deg, #0a4012, #30d158); }
-  .grad-red { background: linear-gradient(135deg, #4a0a0a, #ff453a); }
-  .grad-orange { background: linear-gradient(135deg, #4a2a00, #ff9f0a); }
-  .grad-pink { background: linear-gradient(135deg, #4a0a2a, #ff375f); }
-  .grad-teal { background: linear-gradient(135deg, #0a3040, #40c8e0); }
-  .grad-indigo { background: linear-gradient(135deg, #1a0a4a, #7c3aed); }
-  .grad-yellow { background: linear-gradient(135deg, #3a2a00, #ffd60a); }
-  .grad-cyan { background: linear-gradient(135deg, #003040, #00c7be); }
-  .grad-brown { background: linear-gradient(135deg, #2a1a0a, #ac8e68); }
-  .grad-gray { background: linear-gradient(135deg, #1c1c1e, #48484a); }
+/* sep */
+.sep{height:1px;background:var(--border);margin:0 20px;}
 </style>
 </head>
 <body>
 
-<!-- LOGIN SCREEN -->
-<div id="loginScreen" class="screen active" style="display:flex;">
-  <div class="login-logo">
-    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect width="52" height="52" rx="12" fill="none"/>
-      <path d="M26 8C26 8 14 14 14 26C14 32.627 18.373 38.2 24.4 39.8L26 44L27.6 39.8C33.627 38.2 38 32.627 38 26C38 14 26 8 26 8Z" fill="white"/>
-      <circle cx="26" cy="26" r="6" fill="rgba(10,132,255,0.7)"/>
-      <path d="M20 18L26 14L32 18" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
-      <path d="M20 34L26 38L32 34" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="loginScreen" class="screen active" style="display:flex;opacity:1;transform:translateY(0);">
+  <div class="login-logo-wrap" id="loginLogo">
+    <svg viewBox="0 0 54 54" fill="none">
+      <path d="M27 6C27 6 13 13 13 27C13 34.5 17.5 41 24 43.5L27 48L30 43.5C36.5 41 41 34.5 41 27C41 13 27 6 27 6Z" fill="white"/>
+      <circle cx="27" cy="27" r="7" fill="rgba(10,132,255,0.75)"/>
+      <path d="M20 19L27 15L34 19M20 35L27 39L34 35" stroke="rgba(255,255,255,0.55)" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </div>
   <div class="login-title">AppStorePro+++</div>
   <div class="login-sub">Войдите через ApplePlus ID</div>
-
   <div class="login-form">
     <div class="login-field">
       <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="Введите email" autocomplete="off">
+      <input type="email" id="loginEmail" placeholder="example@mail.com" autocomplete="off">
     </div>
     <div class="login-field">
       <label>Пароль</label>
-      <input type="password" id="loginPass" placeholder="Введите пароль" autocomplete="off">
+      <input type="password" id="loginPass" placeholder="Введите пароль">
     </div>
   </div>
-
   <button class="btn-primary" onclick="doLogin()">Войти в ApplePlus ID</button>
-  <div class="login-hint">Введите любой email и пароль для входа</div>
+  <div class="login-hint">Введите любой email и пароль</div>
 </div>
 
-<!-- CONGRATS SCREEN -->
-<div id="congratsScreen" class="screen" style="justify-content:center; align-items:center; padding:40px 28px; background:linear-gradient(160deg,#0a0a1a,#0d1b2a,#0a0a0a);">
+<!-- ============ CONGRATS SCREEN ============ -->
+<div id="congratsScreen" class="screen">
   <div class="congrats-icon">
-    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M32 8C32 8 18 15 18 32C18 41.941 24.059 50.4 32 52C39.941 50.4 46 41.941 46 32C46 15 32 8 32 8Z" fill="white"/>
+    <svg viewBox="0 0 64 64" fill="none">
+      <path d="M32 8C32 8 17 15 17 32C17 42 23 50.5 32 53C41 50.5 47 42 47 32C47 15 32 8 32 8Z" fill="white"/>
       <circle cx="32" cy="32" r="8" fill="rgba(10,132,255,0.8)"/>
-      <path d="M24 22L32 18L40 22M24 42L32 46L40 42" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
-      <circle cx="20" cy="16" r="3" fill="rgba(255,215,0,0.8)"/>
-      <circle cx="44" cy="16" r="3" fill="rgba(255,100,100,0.8)"/>
-      <circle cx="12" cy="32" r="2" fill="rgba(100,255,100,0.8)"/>
-      <circle cx="52" cy="28" r="2" fill="rgba(100,200,255,0.8)"/>
+      <path d="M24 22L32 18L40 22M24 42L32 46L40 42" stroke="rgba(255,255,255,0.65)" stroke-width="2.5" stroke-linecap="round"/>
     </svg>
   </div>
   <div class="congrats-title">Добро пожаловать!</div>
   <div class="congrats-text">
-    Вы успешно вошли в <span>AppStorePro+++</span><br>
-    Получите доступ к эксклюзивным приложениям, модам и расширенным версиям популярных сервисов.
+    Вы вошли в <span>AppStorePro+++</span><br>
+    Эксклюзивные приложения, моды и расширенные версии — всё здесь.
   </div>
   <button class="btn-primary" onclick="gotoMain()">Продолжить</button>
 </div>
 
-<!-- MAIN APP -->
+<!-- ============ MAIN APP ============ -->
 <div id="mainApp">
+
   <!-- STATUS BAR -->
-  <div class="status-bar" style="flex-shrink:0; background:#000;">
+  <div class="status-bar">
     <span class="status-time" id="statusTime">16:00</span>
-    <div class="status-icons">
-      <svg viewBox="0 0 17 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.3"/></svg>
-      <svg viewBox="0 0 16 12" fill="white"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1C4.9 1 2.1 2.3 0 4.4L0.9 5.3C2.7 3.5 5.2 2.4 8 2.4Z"/><path d="M8 5.2C9.8 5.2 11.5 5.9 12.7 7.1L13.6 6.2C12.1 4.7 10.2 3.8 8 3.8C5.8 3.8 3.9 4.7 2.4 6.2L3.3 7.1C4.5 5.9 6.2 5.2 8 5.2Z"/><circle cx="8" cy="10" r="1.5"/></svg>
-      <svg viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="21" height="10" rx="3" stroke="white" stroke-width="1" fill="none"/><rect x="2" y="3" width="13" height="6" rx="1.5" fill="white"/><path d="M22 4.5V7.5C23.1 7 23.1 5 22 4.5Z"/></svg>
+    <div class="status-right">
+      <!-- Signal -->
+      <svg width="17" height="12" viewBox="0 0 17 12" fill="white">
+        <rect x="0" y="4" width="3" height="8" rx="1"/>
+        <rect x="4.5" y="2.5" width="3" height="9.5" rx="1"/>
+        <rect x="9" y="0.5" width="3" height="11.5" rx="1"/>
+        <rect x="13.5" y="0.5" width="3" height="11.5" rx="1" opacity="0.3"/>
+      </svg>
+      <!-- Wifi -->
+      <svg width="16" height="12" viewBox="0 0 16 12" fill="white">
+        <path d="M8 9.5C8.8 9.5 9.5 10.2 9.5 11C9.5 11.8 8.8 12.5 8 12.5C7.2 12.5 6.5 11.8 6.5 11C6.5 10.2 7.2 9.5 8 9.5Z"/>
+        <path d="M4.5 6.5C5.7 5.3 7.2 4.7 8 4.7C8.8 4.7 10.3 5.3 11.5 6.5" stroke="white" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+        <path d="M1.5 3.5C3.5 1.5 5.7 0.5 8 0.5C10.3 0.5 12.5 1.5 14.5 3.5" stroke="white" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <!-- Battery -->
+      <svg width="25" height="12" viewBox="0 0 25 12" fill="none">
+        <rect x="0.5" y="0.5" width="21" height="11" rx="3" stroke="white" stroke-width="1"/>
+        <rect x="2" y="2" width="14" height="8" rx="1.5" fill="white"/>
+        <path d="M22.5 4.5V7.5C23.6 7 23.6 5 22.5 4.5Z" fill="white"/>
+      </svg>
     </div>
   </div>
 
-  <!-- TAB PAGES -->
-  <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; position:relative;">
+  <!-- PAGES -->
+  <div class="pages-wrap">
 
-    <!-- TODAY TAB -->
+    <!-- TODAY -->
     <div class="tab-page active" id="tabToday">
-      <div class="scroll-content">
-        <div class="page-header animated">
+      <div class="scroll-area">
+        <div class="page-header">
           <span class="page-title">Сегодня</span>
           <button class="avatar-btn" onclick="openAccount()">АП</button>
         </div>
 
-        <!-- HERO -->
-        <div class="hero-card animated" onclick="openAppDetail('gemini')">
-          <div class="hero-img-placeholder" style="background:linear-gradient(135deg, #0a0a2a 0%, #1a0a40 30%, #3d1a6e 60%, #6b21a8 80%, #4c1d95 100%);">
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
-              <div style="font-size:80px;filter:drop-shadow(0 4px 12px rgba(139,92,246,0.7));">&#x1F4AB;</div>
-              <div style="font-size:22px;font-weight:800;color:#fff;">Gemini Plus</div>
-              <div style="display:flex;gap:8px;">
-                <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#3b82f6);opacity:0.8;"></div>
-                <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#8b5cf6);opacity:0.7;"></div>
-                <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);opacity:0.9;"></div>
-              </div>
+        <!-- HERO 1 -->
+        <div class="hero-card" onclick="openAppDetail('gemini')">
+          <div class="hero-placeholder" style="background:linear-gradient(135deg,#060620,#1a0840,#3d1a6e,#6b21a8);">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 35%,rgba(139,92,246,.55),transparent 55%),radial-gradient(ellipse at 20% 75%,rgba(59,130,246,.35),transparent 50%);"></div>
+            <div style="position:relative;z-index:1;text-align:center;">
+              <!-- Animated orbiting circles SVG -->
+              <svg width="160" height="160" viewBox="0 0 160 160" style="animation:fl1 4s ease-in-out infinite;">
+                <circle cx="80" cy="80" r="38" fill="none" stroke="rgba(139,92,246,0.3)" stroke-width="1.5"/>
+                <circle cx="80" cy="80" r="60" fill="none" stroke="rgba(59,130,246,0.2)" stroke-width="1" stroke-dasharray="8 4"/>
+                <circle cx="80" cy="42" r="10" fill="rgba(139,92,246,0.7)"/>
+                <circle cx="118" cy="92" r="7" fill="rgba(59,130,246,0.6)"/>
+                <circle cx="44" cy="105" r="8" fill="rgba(236,72,153,0.6)"/>
+                <circle cx="80" cy="80" r="22" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                <path d="M72 80L78 86L90 72" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </div>
           </div>
           <div class="hero-overlay">
@@ -921,117 +670,117 @@
           </div>
         </div>
 
-        <!-- SECTION: РЕКОМЕНДУЕМ -->
-        <div class="section-header animated">
-          <span class="section-title">Рекомендуем сегодня</span>
-          <span class="section-more">Ещё &rsaquo;</span>
+        <div class="section-header">
+          <span class="section-title">Горячие новинки</span>
+          <span class="section-more">Ещё ›</span>
         </div>
-
-        <!-- HORIZONTAL APPS -->
-        <div class="h-scroll animated">
+        <div class="h-scroll">
+          <div class="app-card-sm" onclick="openAppDetail('gemini')">
+            <div class="app-icon-wrap g-indigo"><svg viewBox="0 0 38 38" fill="none"><path d="M19 4L4 19L19 34L34 19L19 4Z" stroke="white" stroke-width="2.5" fill="none"/><circle cx="19" cy="19" r="6" fill="rgba(255,255,255,0.85)"/><circle cx="19" cy="19" r="2.5" fill="#5e5ce6"/></svg></div>
+            <div class="app-name">Gemini Plus</div>
+          </div>
           <div class="app-card-sm" onclick="openAppDetail('chatgpt')">
-            <div class="app-icon grad-green"><span style="font-size:32px;">&#x1F916;</span></div>
+            <div class="app-icon-wrap g-green"><svg viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="13" stroke="white" stroke-width="2"/><path d="M13 19h12M19 13v12" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg></div>
             <div class="app-name">ChatGPT Pro</div>
           </div>
-          <div class="app-card-sm" onclick="openAppDetail('tiktok')">
-            <div class="app-icon" style="background:#000;"><span style="font-size:32px;">&#127925;</span></div>
-            <div class="app-name">TikTok Pro</div>
-          </div>
           <div class="app-card-sm" onclick="openAppDetail('telegram')">
-            <div class="app-icon grad-blue"><span style="font-size:32px;">&#x2708;&#xFE0F;</span></div>
+            <div class="app-icon-wrap g-blue"><svg viewBox="0 0 38 38" fill="none"><path d="M5 19L33 7L24 33L18 22L5 19Z" stroke="white" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M18 22L24 33" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
             <div class="app-name">Telegram++++</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('youtube')">
-            <div class="app-icon grad-red"><span style="font-size:32px;">&#9654;</span></div>
+            <div class="app-icon-wrap g-red"><svg viewBox="0 0 38 38" fill="none"><rect x="4" y="8" width="30" height="22" rx="6" stroke="white" stroke-width="2" fill="none"/><path d="M15 14l12 5-12 5V14Z" fill="white"/></svg></div>
             <div class="app-name">YouTube Pro</div>
           </div>
-          <div class="app-card-sm" onclick="openAppDetail('claude')">
-            <div class="app-icon grad-orange"><span style="font-size:32px;">&#129302;</span></div>
-            <div class="app-name">Claude+++</div>
-          </div>
           <div class="app-card-sm" onclick="openAppDetail('esign')">
-            <div class="app-icon grad-purple"><span style="font-size:32px;">&#x270D;</span></div>
+            <div class="app-icon-wrap g-purple"><svg viewBox="0 0 38 38" fill="none"><path d="M10 28L14 24L28 10L32 14L18 28L10 28Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M10 28L10 33" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
             <div class="app-name">ESign+++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('jailbreak')">
+            <div class="app-icon-wrap g-green"><svg viewBox="0 0 38 38" fill="none"><rect x="10" y="4" width="18" height="24" rx="3" stroke="white" stroke-width="2" fill="none"/><path d="M15 28v4a4 4 0 0 0 8 0v-4" stroke="white" stroke-width="2"/><circle cx="19" cy="16" r="3" fill="white"/></svg></div>
+            <div class="app-name">Jailbreak+++</div>
           </div>
         </div>
 
-        <!-- SECOND HERO -->
-        <div class="hero-card animated" onclick="openAppDetail('jailbreak')" style="margin-top:8px;">
-          <div class="hero-img-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#0a3a0a,#1a5a1a);">
-            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
-              <div style="font-size:70px;">&#x1F513;</div>
-              <div style="font-size:20px;font-weight:800;color:#30d158;">Jailbreak +++</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.6);">iOS 26 - iOS 27 Developer Preview</div>
+        <!-- HERO 2 -->
+        <div class="hero-card" onclick="openAppDetail('jailbreak')" style="margin-top:8px;">
+          <div class="hero-placeholder" style="background:linear-gradient(135deg,#061a06,#0a3a0a,#1a5a1a);">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 40%,rgba(48,209,88,.3),transparent 55%);"></div>
+            <div style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:12px;">
+              <svg width="120" height="120" viewBox="0 0 120 120" style="animation:fl2 5s ease-in-out infinite;">
+                <circle cx="60" cy="60" r="42" fill="none" stroke="rgba(48,209,88,0.25)" stroke-width="1.5" stroke-dasharray="10 5"/>
+                <circle cx="60" cy="60" r="28" fill="rgba(48,209,88,0.08)" stroke="rgba(48,209,88,0.4)" stroke-width="1.5"/>
+                <rect x="45" y="22" width="30" height="42" rx="6" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                <path d="M50 64v10a10 10 0 0 0 20 0V64" stroke="rgba(255,255,255,0.7)" stroke-width="2"/>
+                <circle cx="60" cy="44" r="5" fill="rgba(48,209,88,0.9)"/>
+                <path d="M55 44l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <div style="font-size:15px;color:rgba(48,209,88,0.9);font-weight:600;letter-spacing:.5px;">iOS 26 — iOS 27</div>
             </div>
           </div>
           <div class="hero-overlay">
             <div class="hero-label">Эксклюзив</div>
-            <div class="hero-title">Jailbreak для iOS 26-27</div>
+            <div class="hero-title">Jailbreak+++ </div>
             <div class="hero-sub">Developer Preview Edition</div>
           </div>
         </div>
 
-        <!-- APPS LIST -->
-        <div class="section-header animated">
+        <div class="section-header">
           <span class="section-title">Топ AppStorePro+++</span>
-          <span class="section-more">Ещё &rsaquo;</span>
+          <span class="section-more">Ещё ›</span>
         </div>
-        <div class="app-list animated" id="mainAppList"></div>
-
+        <div class="app-list" id="listToday"></div>
         <div style="height:20px;"></div>
       </div>
     </div>
 
-    <!-- GAMES TAB -->
+    <!-- GAMES -->
     <div class="tab-page" id="tabGames">
-      <div class="scroll-content">
-        <div class="page-header animated">
+      <div class="scroll-area">
+        <div class="page-header">
           <span class="page-title">Игры</span>
           <button class="avatar-btn" onclick="openAccount()">АП</button>
         </div>
 
-        <!-- FEATURE BANNER -->
-        <div class="feature-banner animated" onclick="openAppDetail('roblox')">
-          <div style="width:100%;height:220px;background:linear-gradient(135deg,#1a0a3a,#3d1a6e,#2563eb);border-radius:20px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(139,92,246,0.5),transparent 60%);"></div>
-            <div style="text-align:center;z-index:1;">
-              <div style="font-size:60px;margin-bottom:8px;">&#x1F3AE;</div>
+        <div class="feature-banner" onclick="openAppDetail('roblox')">
+          <div style="width:100%;height:220px;background:linear-gradient(135deg,#0a0520,#2d0a6e,#1a2d8e);border-radius:22px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(94,92,230,.45),transparent 55%);"></div>
+            <div style="position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;">
+              <svg width="80" height="80" viewBox="0 0 80 80" style="animation:fl1 3s ease-in-out infinite;">
+                <rect x="20" y="20" width="40" height="40" fill="none" stroke="white" stroke-width="3"/>
+                <rect x="30" y="30" width="20" height="20" fill="white"/>
+              </svg>
               <div style="font-size:22px;font-weight:800;">Roblox+++</div>
-              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Миллионы игр без ограничений</div>
+              <div style="font-size:14px;color:rgba(255,255,255,.7);">Миллионы игр — без ограничений</div>
             </div>
-            <div class="detail-app-name" style="position:absolute;bottom:16px;right:16px;">
-              <button class="dl-btn" onclick="event.stopPropagation();installAppBtn('roblox',this)">Загрузить</button>
+            <div style="position:absolute;bottom:16px;right:16px;">
+              <button class="dl-btn" onclick="event.stopPropagation();confirmInstall('roblox',this)">Загрузить</button>
             </div>
           </div>
         </div>
 
-        <div class="section-header animated">
-          <span class="section-title">Лучшие игры &rsaquo;</span>
+        <div class="section-header">
+          <span class="section-title">Лучшие игры ›</span>
         </div>
-        <div class="app-list animated" id="gamesAppList"></div>
+        <div class="app-list" id="listGames"></div>
 
-        <div class="section-header animated">
-          <span class="section-title">Эксклюзивы Pro &rsaquo;</span>
+        <div class="section-header">
+          <span class="section-title">Эксклюзивы Pro ›</span>
         </div>
-        <div class="h-scroll animated">
+        <div class="h-scroll">
           <div class="app-card-sm" onclick="openAppDetail('standoff')">
-            <div class="app-icon grad-red"><span style="font-size:32px;">&#x1F52B;</span></div>
+            <div class="app-icon-wrap g-red"><svg viewBox="0 0 38 38" fill="none"><path d="M8 30L19 8L30 30" stroke="white" stroke-width="2.5" stroke-linejoin="round" fill="none"/><circle cx="19" cy="24" r="2.5" fill="white"/></svg></div>
             <div class="app-name">Standoff 2 Plus</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('minecraft')">
-            <div class="app-icon grad-green"><span style="font-size:32px;">&#x26CF;</span></div>
+            <div class="app-icon-wrap g-green"><svg viewBox="0 0 38 38" fill="none"><rect x="7" y="7" width="24" height="24" stroke="white" stroke-width="2" fill="none"/><rect x="12" y="12" width="7" height="7" fill="white" opacity="0.5"/><rect x="19" y="19" width="7" height="7" fill="white" opacity="0.5"/></svg></div>
             <div class="app-name">Minecraft+</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('games')">
-            <div class="app-icon grad-purple"><span style="font-size:32px;">&#x1F579;</span></div>
-            <div class="app-name">Games++++++++++++</div>
-          </div>
-          <div class="app-card-sm" onclick="openAppDetail('jailbreak')">
-            <div class="app-icon grad-green"><span style="font-size:32px;">&#x1F513;</span></div>
-            <div class="app-name">Jailbreak+++</div>
+            <div class="app-icon-wrap g-purple"><svg viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="13" stroke="white" stroke-width="2" fill="none"/><path d="M14 19h10M19 14v10" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+            <div class="app-name">Games+++++</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('tiktokmod')">
-            <div class="app-icon" style="background:linear-gradient(135deg,#1a1a1a,#333);"><span style="font-size:32px;">&#127925;</span></div>
+            <div class="app-icon-wrap g-dark"><svg viewBox="0 0 38 38" fill="none"><path d="M16 8h6v14a6 6 0 0 1-6 6 6 6 0 0 1-6-6 6 6 0 0 1 6-6v-4a10 10 0 0 0-10 10 10 10 0 0 0 10 10 10 10 0 0 0 10-10V14a12 12 0 0 0 6 2v-6a6 6 0 0 1-6-6h-6v4z" fill="white" stroke="none"/></svg></div>
             <div class="app-name">TikTok MOD</div>
           </div>
         </div>
@@ -1040,1296 +789,915 @@
       </div>
     </div>
 
-    <!-- APPS TAB -->
+    <!-- APPS -->
     <div class="tab-page" id="tabApps">
-      <div class="scroll-content">
-        <div class="page-header animated">
+      <div class="scroll-area">
+        <div class="page-header">
           <span class="page-title">Приложения</span>
           <button class="avatar-btn" onclick="openAccount()">АП</button>
         </div>
-
-        <!-- CHIPS -->
-        <div class="chips animated">
-          <div class="chip">&#x231A; Для Apple Watch</div>
-          <div class="chip">&#x1F4BC; Бизнес</div>
-          <div class="chip">&#x1F3AE; Игры</div>
-          <div class="chip">&#x1F4F1; Социальные</div>
-          <div class="chip">&#x1F3B5; Музыка</div>
-          <div class="chip">&#x1F4F7; Фото</div>
+        <div class="chips">
+          <div class="chip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5"/><path d="M8 4v4l3 2" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Для Apple Watch
+          </div>
+          <div class="chip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10" rx="2" stroke="white" stroke-width="1.5" fill="none"/><path d="M5 7h6M5 10h4" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
+            Бизнес
+          </div>
+          <div class="chip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="white" stroke-width="1.5" fill="none"/><path d="M5 8l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Социальные
+          </div>
+          <div class="chip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2l1.5 3 3.5.5-2.5 2.5.5 3.5L8 10l-3 1.5.5-3.5L3 5.5l3.5-.5L8 2z" stroke="white" stroke-width="1.3" fill="none" stroke-linejoin="round"/></svg>
+            Новинки
+          </div>
+          <div class="chip">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v12M2 8h12" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+            Музыка
+          </div>
         </div>
 
         <!-- BANNER -->
-        <div class="feature-banner animated" style="margin:8px 16px;">
-          <div style="background:linear-gradient(135deg,#0a2040,#1a4070);border-radius:20px;padding:20px;position:relative;overflow:hidden;">
-            <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:50px;opacity:0.3;">&#x1F4E1;</div>
-            <div class="banner-label">Подборка</div>
-            <div class="banner-title">Лучшие ИИ-помощники</div>
-            <div class="banner-sub">Gemini, ChatGPT, Claude и другие</div>
+        <div class="feature-banner" style="margin:8px 16px;">
+          <div style="background:linear-gradient(135deg,#08143a,#0a2870);border-radius:22px;padding:22px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-10px;top:50%;transform:translateY(-50%);opacity:.12;">
+              <svg width="120" height="120" viewBox="0 0 120 120" fill="none"><circle cx="60" cy="60" r="55" stroke="white" stroke-width="2"/><circle cx="60" cy="60" r="35" stroke="white" stroke-width="2"/><circle cx="60" cy="60" r="15" fill="white"/></svg>
+            </div>
+            <div style="font-size:11px;font-weight:700;color:#0a84ff;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">Подборка</div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px;">Лучшие ИИ-помощники</div>
+            <div style="font-size:14px;color:var(--sub);margin-bottom:16px;">Gemini, ChatGPT, Claude и другие</div>
             <div style="display:flex;gap:10px;">
-              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a3a6e,#4c6fff);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('gemini')">&#x1F4AB;</div>
-              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0a3a0a,#30d158);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('chatgpt')">&#x1F916;</div>
-              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#3a2000,#ff9f0a);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('claude')">&#129302;</div>
+              <div style="width:46px;height:46px;border-radius:11px;" class="g-indigo" onclick="openAppDetail('gemini')"><svg viewBox="0 0 46 46" fill="none" style="width:46px;height:46px;"><path d="M23 8L8 23L23 38L38 23L23 8Z" stroke="white" stroke-width="2" fill="none"/><circle cx="23" cy="23" r="6" fill="rgba(255,255,255,0.85)"/></svg></div>
+              <div style="width:46px;height:46px;border-radius:11px;" class="g-green" onclick="openAppDetail('chatgpt')"><svg viewBox="0 0 46 46" fill="none" style="width:46px;height:46px;"><circle cx="23" cy="23" r="13" stroke="white" stroke-width="2" fill="none"/><path d="M16 23h14M23 16v14" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+              <div style="width:46px;height:46px;border-radius:11px;" class="g-orange" onclick="openAppDetail('claude')"><svg viewBox="0 0 46 46" fill="none" style="width:46px;height:46px;"><rect x="12" y="8" width="22" height="30" rx="4" stroke="white" stroke-width="2" fill="none"/><path d="M17 18h12M17 24h8" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
             </div>
           </div>
         </div>
 
-        <div class="section-header animated">
-          <span class="section-title">Самое основное &rsaquo;</span>
+        <div class="section-header">
+          <span class="section-title">Самое основное ›</span>
         </div>
-        <div class="app-list animated" id="appsTabList"></div>
+        <div class="app-list" id="listApps"></div>
 
-        <div class="section-header animated">
-          <span class="section-title">Покупки &rsaquo;</span>
+        <div class="section-header">
+          <span class="section-title">Покупки ›</span>
         </div>
-        <div class="h-scroll animated">
+        <div class="h-scroll">
           <div class="app-card-sm" onclick="openAppDetail('wb')">
-            <div class="app-icon grad-purple"><span style="font-size:28px;">&#x1F6CD;</span></div>
+            <div class="app-icon-wrap g-purple"><svg viewBox="0 0 38 38" fill="none"><path d="M7 10h24l-3 18H10L7 10Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M3 10h32" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="14" cy="33" r="2" fill="white"/><circle cx="24" cy="33" r="2" fill="white"/></svg></div>
             <div class="app-name">WB+</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('ozon')">
-            <div class="app-icon grad-blue"><span style="font-size:28px;">&#x1F4E6;</span></div>
+            <div class="app-icon-wrap g-blue"><svg viewBox="0 0 38 38" fill="none"><rect x="8" y="12" width="22" height="16" rx="3" stroke="white" stroke-width="2" fill="none"/><path d="M14 12V9a5 5 0 0 1 10 0v3" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
             <div class="app-name">OZON+++</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('avito')">
-            <div class="app-icon grad-green"><span style="font-size:28px;">&#x1F3E0;</span></div>
+            <div class="app-icon-wrap g-green"><svg viewBox="0 0 38 38" fill="none"><rect x="5" y="8" width="28" height="22" rx="4" stroke="white" stroke-width="2" fill="none"/><path d="M5 16h28" stroke="white" stroke-width="1.5"/><path d="M13 24h4M20 24h5" stroke="white" stroke-width="2" stroke-linecap="round"/></svg></div>
             <div class="app-name">Авито</div>
           </div>
           <div class="app-card-sm" onclick="openAppDetail('yula')">
-            <div class="app-icon grad-orange"><span style="font-size:28px;">&#x1F4B0;</span></div>
+            <div class="app-icon-wrap g-orange"><svg viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="13" stroke="white" stroke-width="2" fill="none"/><path d="M19 13v6l4 4" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
             <div class="app-name">Юла+++</div>
           </div>
         </div>
-
         <div style="height:20px;"></div>
       </div>
     </div>
 
-    <!-- ARCADE TAB -->
+    <!-- ARCADE -->
     <div class="tab-page" id="tabArcade">
-      <div class="scroll-content">
-        <div class="page-header animated">
+      <div class="scroll-area">
+        <div class="page-header">
           <span class="page-title">Arcade</span>
           <button class="avatar-btn" onclick="openAccount()">АП</button>
         </div>
 
-        <div class="arcade-hero">
-          <div class="arcade-grid"></div>
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;">
-            <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:20px;">
-              <div style="font-size:45px;animation:float1 3s ease-in-out infinite;">&#x1F47E;</div>
-              <div style="font-size:45px;animation:float2 3s ease-in-out infinite 0.5s;">&#x1F579;</div>
-              <div style="font-size:45px;animation:float1 3s ease-in-out infinite 1s;">&#x1F3AE;</div>
-              <div style="font-size:45px;animation:float2 3s ease-in-out infinite 1.5s;">&#x1F3B2;</div>
-              <div style="font-size:45px;animation:float1 3s ease-in-out infinite 2s;">&#x1F6F8;</div>
+        <!-- Arcade hero -->
+        <div style="height:260px;background:linear-gradient(180deg,#3d0c02 0%,#1a0800 55%,#000 100%);position:relative;overflow:hidden;border-radius:0 0 0 0;">
+          <div class="arcade-grid-bg"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;gap:24px;padding:20px;">
+            <div style="animation:fl1 3s ease-in-out infinite;">
+              <svg width="50" height="50" viewBox="0 0 50 50" fill="none"><rect x="5" y="5" width="40" height="40" rx="8" fill="rgba(255,80,80,0.8)"/><circle cx="25" cy="20" r="8" fill="white"/><path d="M15 38c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+            </div>
+            <div style="animation:fl2 3.5s ease-in-out infinite 0.5s;">
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><rect x="4" y="4" width="48" height="48" rx="12" fill="rgba(94,92,230,0.85)"/><circle cx="28" cy="22" r="10" fill="none" stroke="white" stroke-width="2.5"/><path d="M20 38c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/><circle cx="28" cy="22" r="3.5" fill="white"/></svg>
+            </div>
+            <div style="animation:fl3 4s ease-in-out infinite 1s;">
+              <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><rect x="4" y="4" width="40" height="40" rx="10" fill="rgba(48,209,88,0.8)"/><path d="M14 28V20h20v8" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M10 28h28M16 28v8M32 28v8" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+            </div>
+            <div style="animation:fl1 3.2s ease-in-out infinite 1.5s;">
+              <svg width="50" height="50" viewBox="0 0 50 50" fill="none"><rect x="5" y="5" width="40" height="40" rx="9" fill="rgba(255,159,10,0.85)"/><path d="M15 35l5-10 5 6 5-14 5 18" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
           </div>
         </div>
 
-        <style>
-          @keyframes float1 { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
-          @keyframes float2 { 0%,100%{transform:translateY(-8px);} 50%{transform:translateY(4px);} }
-        </style>
-
-        <div class="arcade-title-section animated">
-          <div class="arcade-logo">&#xF8FF; Arcade</div>
-          <div class="arcade-headline">Без рекламы и встроенных покупок. Только игры</div>
-          <button class="arcade-offer-btn" onclick="showNotification('Arcade', 'Подписка активирована!', '&#x1F3AE;')">Принять предложение</button>
-          <div class="arcade-hint">Бесплатно 1 мес., затем 199,00 руб. в мес.</div>
+        <div style="text-align:center;padding:28px 24px 24px;">
+          <div style="font-size:18px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:6px;">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2L7 7H2L6.5 10.5L5 16L9 12.5L13 16L11.5 10.5L16 7H11L9 2Z" fill="white"/></svg>
+            Arcade
+          </div>
+          <div style="font-size:25px;font-weight:800;line-height:1.25;margin-bottom:20px;">Без рекламы и встроенных покупок. Только игры</div>
+          <button class="btn-primary" onclick="showNotif('Arcade','Подписка активирована!','check')">Принять предложение</button>
+          <div style="font-size:13px;color:var(--sub);margin-top:10px;">Бесплатно 1 мес., затем 199 руб./мес.</div>
         </div>
 
-        <div class="section-header animated">
-          <span class="section-title">Все игры &rsaquo;</span>
-        </div>
-        <div class="h-scroll animated">
-          <div class="app-card-sm" onclick="openAppDetail('standoff')">
-            <div class="app-icon grad-red"><span style="font-size:28px;">&#x1F52B;</span></div>
-            <div class="app-name">Standoff 2 Plus</div>
-          </div>
-          <div class="app-card-sm" onclick="openAppDetail('minecraft')">
-            <div class="app-icon grad-green"><span style="font-size:28px;">&#x26CF;</span></div>
-            <div class="app-name">Minecraft+</div>
-          </div>
-          <div class="app-card-sm" onclick="openAppDetail('roblox')">
-            <div class="app-icon grad-blue"><span style="font-size:28px;">&#x25A0;</span></div>
-            <div class="app-name">Roblox+++</div>
-          </div>
-          <div class="app-card-sm" onclick="openAppDetail('games')">
-            <div class="app-icon grad-purple"><span style="font-size:28px;">&#x1F579;</span></div>
-            <div class="app-name">Games++++++++++++</div>
-          </div>
+        <div class="section-header"><span class="section-title">Все игры ›</span></div>
+        <div class="h-scroll">
+          <div class="app-card-sm" onclick="openAppDetail('standoff')"><div class="app-icon-wrap g-red"><svg viewBox="0 0 38 38" fill="none"><path d="M8 30L19 8L30 30" stroke="white" stroke-width="2.5" stroke-linejoin="round" fill="none"/><circle cx="19" cy="24" r="2.5" fill="white"/></svg></div><div class="app-name">Standoff 2 Plus</div></div>
+          <div class="app-card-sm" onclick="openAppDetail('minecraft')"><div class="app-icon-wrap g-green"><svg viewBox="0 0 38 38" fill="none"><rect x="7" y="7" width="24" height="24" stroke="white" stroke-width="2" fill="none"/><rect x="12" y="12" width="7" height="7" fill="rgba(255,255,255,0.5)"/><rect x="19" y="19" width="7" height="7" fill="rgba(255,255,255,0.5)"/></svg></div><div class="app-name">Minecraft+</div></div>
+          <div class="app-card-sm" onclick="openAppDetail('roblox')"><div class="app-icon-wrap g-blue"><svg viewBox="0 0 38 38" fill="none"><rect x="10" y="10" width="18" height="18" fill="none" stroke="white" stroke-width="2.5"/><rect x="15" y="15" width="8" height="8" fill="white"/></svg></div><div class="app-name">Roblox+++</div></div>
+          <div class="app-card-sm" onclick="openAppDetail('games')"><div class="app-icon-wrap g-purple"><svg viewBox="0 0 38 38" fill="none"><circle cx="19" cy="19" r="13" stroke="white" stroke-width="2" fill="none"/><path d="M14 19h10M19 14v10" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg></div><div class="app-name">Games+++++</div></div>
         </div>
 
-        <!-- Arcade categories -->
-        <div class="section-header animated"><span class="section-title">Категории</span></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;" class="animated">
-          <div style="background:linear-gradient(135deg,#1a0a4a,#5e5ce6);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Все игры','&#x1F3AE;')">
-            <div style="font-size:16px;font-weight:700;">Все игры</div>
-          </div>
-          <div style="background:linear-gradient(135deg,#2a1a00,#ff9f0a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Настольные','&#x265F;')">
-            <div style="font-size:16px;font-weight:700;">Настольные</div>
-          </div>
-          <div style="background:linear-gradient(135deg,#0a2a0a,#30d158);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Приключения','&#x1F5FA;')">
-            <div style="font-size:16px;font-weight:700;">Приключения</div>
-          </div>
-          <div style="background:linear-gradient(135deg,#2a0a0a,#ff453a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Экшен','&#x1F525;')">
-            <div style="font-size:16px;font-weight:700;">Экшен</div>
-          </div>
+        <div class="section-header"><span class="section-title">Категории</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;">
+          <div style="background:linear-gradient(135deg,#1a0a4a,#5e5ce6);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotif('Arcade','Все игры','star')"><div style="font-size:16px;font-weight:700;">Все игры</div></div>
+          <div style="background:linear-gradient(135deg,#2a1a00,#ff9f0a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotif('Arcade','Настольные','star')"><div style="font-size:16px;font-weight:700;">Настольные</div></div>
+          <div style="background:linear-gradient(135deg,#0a2a0a,#30d158);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotif('Arcade','Приключения','star')"><div style="font-size:16px;font-weight:700;">Приключения</div></div>
+          <div style="background:linear-gradient(135deg,#2a0a0a,#ff453a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotif('Arcade','Экшен','star')"><div style="font-size:16px;font-weight:700;">Экшен</div></div>
         </div>
       </div>
     </div>
 
-    <!-- SEARCH TAB -->
+    <!-- SEARCH -->
     <div class="tab-page" id="tabSearch">
-      <div class="scroll-content">
-        <div class="page-header animated">
+      <div class="scroll-area">
+        <div class="page-header">
           <span class="page-title">Поиск</span>
           <button class="avatar-btn" onclick="openAccount()">АП</button>
         </div>
 
-        <div class="search-bar animated">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="#8e8e93" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/></svg>
+        <div class="search-bar">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <circle cx="6.5" cy="6.5" r="5.5" stroke="#8e8e93" stroke-width="1.5"/>
+            <path d="M10.5 10.5L14 14" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
           <input type="text" id="searchInput" placeholder="Игры, приложения и др." oninput="doSearch(this.value)">
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2V16M9 2C9 2 6 5 6 9M9 2C9 2 12 5 12 9" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M9 2v14M9 2C9 2 6 5 6 9M9 2C9 2 12 5 12 9" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
 
-        <div id="searchResults" class="search-results"></div>
+        <div id="searchResults" style="display:none;"></div>
 
         <div id="searchDefault">
-          <div class="section-header animated">
-            <span class="section-title">Рекомендуем &rsaquo;</span>
+          <div class="section-header">
+            <span class="section-title">Рекомендуем ›</span>
           </div>
-          <div class="app-list animated" id="searchRecommend"></div>
+          <div class="app-list" id="listSearch"></div>
 
-          <div class="section-header animated">
-            <span class="section-title">Обзор &rsaquo;</span>
+          <div class="section-header">
+            <span class="section-title">Обзор ›</span>
           </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;" class="animated">
-            <div style="background:linear-gradient(135deg,#1a3a6e,#2563eb);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
-              <div style="font-size:15px;font-weight:700;line-height:1.3;">Топ приложений по загрузкам</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;">
+            <div onclick="filterSearch('приложения')" style="background:linear-gradient(135deg,#1a3a6e,#2563eb);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:12px;right:12px;opacity:.5;">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3l3 7h7l-5.5 4.5 2 7L14 18l-6.5 3.5 2-7L4 10h7L14 3z" fill="white"/></svg>
+              </div>
+              <div style="font-size:15px;font-weight:700;line-height:1.35;">Топ приложений по загрузкам</div>
             </div>
-            <div style="background:linear-gradient(135deg,#4a2a00,#d97706);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
-              <div style="font-size:15px;font-weight:700;line-height:1.3;">Топ игр по загрузкам</div>
+            <div onclick="filterSearch('игры')" style="background:linear-gradient(135deg,#4a2a00,#d97706);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;">
+              <div style="position:absolute;top:12px;right:12px;opacity:.5;">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3l3 7h7l-5.5 4.5 2 7L14 18l-6.5 3.5 2-7L4 10h7L14 3z" fill="white"/></svg>
+              </div>
+              <div style="font-size:15px;font-weight:700;line-height:1.35;">Топ игр по загрузкам</div>
             </div>
-            <div style="background:linear-gradient(135deg,#0a3a0a,#16a34a);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
-              <div style="font-size:15px;font-weight:700;line-height:1.3;">Платные приложения</div>
+            <div onclick="filterSearch('утилиты')" style="background:linear-gradient(135deg,#0a3a0a,#16a34a);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;">
+              <div style="font-size:15px;font-weight:700;line-height:1.35;">Платные приложения</div>
             </div>
-            <div style="background:linear-gradient(135deg,#1a0a4a,#7c3aed);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
-              <div style="font-size:15px;font-weight:700;line-height:1.3;">Новые игры</div>
+            <div onclick="filterSearch('новинки')" style="background:linear-gradient(135deg,#1a0a4a,#7c3aed);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;">
+              <div style="font-size:15px;font-weight:700;line-height:1.35;">Новые игры</div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-  </div>
+  </div><!-- end pages-wrap -->
 
-  <!-- TAB BAR -->
+  <!-- ============ TAB BAR ============ -->
   <div class="tab-bar">
-    <button class="tab-btn active" id="tabBtnToday" onclick="switchTab('Today')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
-      </svg>
-      <span>Сегодня</span>
-    </button>
-    <button class="tab-btn" id="tabBtnGames" onclick="switchTab('Games')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M12 2L2 19h20L12 2z"/><circle cx="12" cy="12" r="2"/>
-      </svg>
-      <span>Игры</span>
-    </button>
-    <button class="tab-btn" id="tabBtnApps" onclick="switchTab('Apps')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-      </svg>
-      <span>Приложения</span>
-    </button>
-    <button class="tab-btn" id="tabBtnArcade" onclick="switchTab('Arcade')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>
-      </svg>
-      <span>Arcade</span>
-    </button>
-    <button class="tab-btn" id="tabBtnSearch" onclick="switchTab('Search')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <span>Поиск</span>
-    </button>
-  </div>
-</div>
 
-<!-- ACCOUNT MODAL -->
-<div class="modal-overlay" id="accountModal" onclick="closeAccountIfOutside(event)">
-  <div class="account-sheet glass-dark" id="accountSheet">
+    <button class="tab-btn active" id="btnToday" onclick="switchTab('Today')">
+      <div class="tab-btn-inner">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="3" y="4" width="18" height="17" rx="3"/>
+            <path d="M16 2v4M8 2v4M3 10h18"/>
+          </svg>
+        </div>
+        <span class="tab-label">Сегодня</span>
+      </div>
+    </button>
+
+    <button class="tab-btn" id="btnGames" onclick="switchTab('Games')">
+      <div class="tab-btn-inner">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2L2 19.5h20L12 2Z"/>
+            <circle cx="12" cy="14" r="2"/>
+          </svg>
+        </div>
+        <span class="tab-label">Игры</span>
+      </div>
+    </button>
+
+    <button class="tab-btn" id="btnApps" onclick="switchTab('Apps')">
+      <div class="tab-btn-inner">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="2.5" y="2.5" width="8" height="8" rx="2"/>
+            <rect x="13.5" y="2.5" width="8" height="8" rx="2"/>
+            <rect x="2.5" y="13.5" width="8" height="8" rx="2"/>
+            <rect x="13.5" y="13.5" width="8" height="8" rx="2"/>
+          </svg>
+        </div>
+        <span class="tab-label">Приложения</span>
+      </div>
+    </button>
+
+    <button class="tab-btn" id="btnArcade" onclick="switchTab('Arcade')">
+      <div class="tab-btn-inner">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M6 12h4M8 10v4"/>
+            <circle cx="15" cy="11" r="1.2" fill="currentColor" stroke="none"/>
+            <circle cx="18" cy="14" r="1.2" fill="currentColor" stroke="none"/>
+            <rect x="2" y="7" width="20" height="12" rx="4"/>
+          </svg>
+        </div>
+        <span class="tab-label">Arcade</span>
+      </div>
+    </button>
+
+    <button class="tab-btn" id="btnSearch" onclick="switchTab('Search')">
+      <div class="tab-btn-inner">
+        <div class="tab-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="11" cy="11" r="7.5"/>
+            <path d="M16.5 16.5L21 21" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="tab-label">Поиск</span>
+      </div>
+    </button>
+
+  </div>
+
+</div><!-- end mainApp -->
+
+<!-- ============ ACCOUNT MODAL ============ -->
+<div class="modal-overlay" id="accountModal" onclick="outsideClose(event)">
+  <div class="account-sheet" id="accountSheet">
     <div class="sheet-header">
       <div class="sheet-title-row">
-        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5"/><circle cx="14" cy="11" r="4" fill="white"/><path d="M5 24c0-5 4-8 9-8s9 3 9 8" stroke="white" stroke-width="1.5" fill="none"/></svg>
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12.5" stroke="white" stroke-width="1.5"/><circle cx="14" cy="11" r="4" fill="white"/><path d="M5 24c0-5 4-8 9-8s9 3 9 8" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>
         <span class="sheet-title">ApplePlus ID</span>
       </div>
       <button class="close-btn" onclick="closeAccount()">&#x2715;</button>
     </div>
 
-    <!-- USER INFO -->
-    <div class="account-card">
-      <div class="account-row">
-        <div class="account-avatar" style="background:linear-gradient(135deg,#48484a,#636366);">АП</div>
-        <div class="account-info">
-          <div class="account-name" id="accName">ApplePlus User</div>
-          <div class="account-sub">Информация об аккаунте, платежи и настройки</div>
+    <div class="acc-card">
+      <div class="acc-row">
+        <div class="acc-avatar" style="background:linear-gradient(135deg,#48484a,#636366);" id="accAvatar">АП</div>
+        <div class="acc-info">
+          <div class="acc-name" id="accName">ApplePlus User</div>
+          <div class="acc-sub">Информация об аккаунте, платежи и настройки</div>
         </div>
-        <span class="chevron">&rsaquo;</span>
+        <span class="chevron">›</span>
       </div>
     </div>
 
-    <!-- REGION -->
     <div class="region-card">
-      <div class="region-label">Регион (изменить в 1 клик)</div>
+      <div class="region-label">Регион — изменить в 1 клик</div>
       <div class="region-grid" id="regionGrid"></div>
     </div>
 
-    <!-- MENU -->
     <div class="menu-card">
-      <div class="menu-row" onclick="showNotification('Аккаунт','Приложения обновлены!','&#x2705;')">
-        <span class="menu-label">Обновление приложений</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showPurchaseHistory()">
-        <span class="menu-label">Приложения и история покупок</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showNotification('Уведомления','Настройки уведомлений сохранены','&#x1F514;')">
-        <span class="menu-label">Уведомления</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showNotification('Отзывы','Ваш отзыв важен для нас!','&#x2B50;')">
-        <span class="menu-label">Оценки и отзывы</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showNotification('Рекомендации','Персонализация включена','&#x1F4A1;')">
-        <span class="menu-label">Персонализированные рекомендации</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showNotification('Безопасность','Двухфакторная аутентификация активна','&#x1F512;')">
-        <span class="menu-label">Безопасность</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
-      <div class="menu-row" onclick="showNotification('Подписки','ApplePlus Pro активна','&#x1F451;')">
-        <span class="menu-label">Подписки</span>
-        <span class="chevron">&rsaquo;</span>
-      </div>
+      <div class="menu-row" onclick="showNotif('Аккаунт','Приложения обновлены!','check')"><span class="menu-label">Обновление приложений</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showPurchaseHistory()"><span class="menu-label">Приложения и история покупок</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showNotif('Уведомления','Настройки сохранены','check')"><span class="menu-label">Уведомления</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showNotif('Отзывы','Спасибо за вашу оценку!','star')"><span class="menu-label">Оценки и отзывы</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showNotif('Рекомендации','Персонализация включена','check')"><span class="menu-label">Персонализированные рекомендации</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showNotif('Безопасность','2FA активирована','check')"><span class="menu-label">Безопасность</span><span class="chevron">›</span></div>
+      <div class="menu-row" onclick="showNotif('Подписки','AppStorePro+++ активна','star')"><span class="menu-label">Подписки</span><span class="chevron">›</span></div>
     </div>
 
-    <!-- ACTIONS -->
     <div class="sheet-actions">
-      <button class="sheet-action" onclick="showNotification('Баланс','Пополнение баланса','&#x20BD;')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8 9h6a2 2 0 0 1 0 4H8"/></svg>
-        <span>Пополнить</span>
+      <button class="sheet-action" onclick="showNotif('Баланс','Пополнение баланса','ruble')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8 9.5h5a2.5 2.5 0 0 1 0 5H8" stroke-linecap="round"/></svg>
+        Пополнить
       </button>
-      <button class="sheet-action" onclick="showNotification('Активация','Код принят!','&#x1F389;')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
-        <span>Активировать</span>
+      <button class="sheet-action" onclick="showNotif('Активация','Код принят!','check')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12h8M12 8v8" stroke-linecap="round"/></svg>
+        Активировать
       </button>
-      <button class="sheet-action" onclick="showNotification('Подарок','Код скопирован!','&#x1F381;')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8V3M8 8c0-2 2-5 4-5s4 3 4 5"/></svg>
-        <span>Отправить</span>
+      <button class="sheet-action" onclick="showNotif('Подарок','Код подарочной карты скопирован','star')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="8" width="18" height="13" rx="3"/><path d="M12 8V4M8 8c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke-linecap="round"/></svg>
+        Отправить
       </button>
     </div>
 
-    <!-- SIGN OUT -->
     <div style="padding:16px;margin-top:8px;">
-      <button style="width:100%;padding:14px;background:rgba(255,59,48,0.15);border:1px solid rgba(255,59,48,0.3);border-radius:14px;color:#ff453a;font-size:17px;cursor:pointer;transition:all 0.2s;" onclick="signOut()">Выйти из ApplePlus ID</button>
+      <button style="width:100%;padding:14px;background:rgba(255,59,48,.14);border:1px solid rgba(255,59,48,.3);border-radius:14px;color:#ff453a;font-size:17px;cursor:pointer;font-family:inherit;transition:opacity .2s;" onclick="signOut()">Выйти из ApplePlus ID</button>
     </div>
   </div>
 </div>
 
-<!-- APP DETAIL OVERLAY -->
+<!-- ============ APP DETAIL OVERLAY ============ -->
 <div id="appDetailOverlay">
-  <div class="detail-header">
-    <button class="detail-back" onclick="closeAppDetail()">
-      <svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M9 1L1 8L9 15" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <div class="detail-topbar">
+    <button class="detail-back" onclick="closeDetail()">
+      <svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M9 1L1 8L9 15" stroke="#0a84ff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       Назад
     </button>
   </div>
   <div class="detail-scroll" id="detailContent"></div>
 </div>
 
-<!-- HOME SCREEN OVERLAY -->
-<div id="homeScreenOverlay">
-  <div class="home-status">
-    <span></span>
-    <span class="status-time" id="homeStatusTime">16:00</span>
+<!-- ============ CONFIRM MODAL ============ -->
+<div id="confirmModal">
+  <div class="confirm-box">
+    <div class="confirm-top">
+      <div class="confirm-icon" id="confirmIcon"></div>
+      <div class="confirm-title" id="confirmTitle">Установить приложение?</div>
+      <div class="confirm-text" id="confirmText">Будет загружен профиль конфигурации и приложение появится на главном экране.</div>
+    </div>
+    <div class="confirm-actions">
+      <button class="confirm-cancel" onclick="closeConfirm()">Отмена</button>
+      <button class="confirm-ok" id="confirmOkBtn" onclick="proceedInstall()">Установить</button>
+    </div>
   </div>
-  <div class="home-time" id="homeTime">16:00</div>
-  <div class="home-date" id="homeDate">Понедельник, 9 июня</div>
-
-  <div class="home-grid" id="homeGrid"></div>
-
-  <div class="home-dock">
-    <div class="dock-app" style="background:linear-gradient(135deg,#1a6e4a,#30d158);" onclick="launchDockApp('messages')">&#x1F4AC;</div>
-    <div class="dock-app" style="background:linear-gradient(135deg,#0a3069,#0a84ff);" onclick="launchDockApp('phone')">&#x1F4DE;</div>
-    <div class="dock-app" style="background:linear-gradient(135deg,#1a1a1a,#333);" onclick="launchDockApp('safari')">&#x1F9ED;</div>
-    <div class="dock-app" style="background:linear-gradient(135deg,#4a2a00,#ff9f0a);" onclick="launchDockApp('music')">&#x1F3B5;</div>
-  </div>
-
-  <button class="home-back-btn" onclick="closeHomeScreen()">Вернуться в AppStorePro+++</button>
 </div>
 
-<!-- NOTIFICATION -->
-<div class="notification" id="notification">
-  <div class="notif-icon" id="notifIcon">&#x2705;</div>
-  <div class="notif-text">
-    <div class="notif-title" id="notifTitle">Готово!</div>
+<!-- ============ PROFILE DOWNLOAD MODAL ============ -->
+<div id="profileModal">
+  <div class="profile-box">
+    <div class="profile-top">
+      <div class="profile-logo" id="profileLogo"></div>
+      <div class="profile-title" id="profileModalTitle">Загрузка профиля</div>
+      <div class="profile-sub">Профиль конфигурации будет установлен на ваше устройство</div>
+    </div>
+    <div class="profile-info">
+      <div class="profile-info-row"><span class="profile-info-key">Подписан:</span><span class="profile-info-val">AppStorePro+++ CA</span></div>
+      <div class="profile-info-row"><span class="profile-info-key">Содержимое:</span><span class="profile-info-val">Приложение + иконка</span></div>
+      <div class="profile-info-row"><span class="profile-info-key">Сертификат:</span><span class="profile-info-val" id="profileCertDate">Действителен до 2027</span></div>
+    </div>
+    <div class="profile-dl-progress">
+      <div class="profile-dl-label">
+        <span id="profileDlStatus">Подготовка...</span>
+        <span id="profileDlPct">0%</span>
+      </div>
+      <div class="profile-prog-wrap"><div class="profile-prog-bar" id="profileProgBar"></div></div>
+    </div>
+    <div class="profile-actions">
+      <button class="profile-cancel-btn" onclick="cancelProfileDl()">Отмена</button>
+      <button class="profile-install-btn" id="profileInstallBtn" disabled onclick="openInstalledProfile()">Готово</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ NOTIFICATION ============ -->
+<div class="notif" id="notif">
+  <div class="notif-icon-wrap" id="notifIconWrap"></div>
+  <div class="notif-body">
+    <div class="notif-title" id="notifTitle">Готово</div>
     <div class="notif-sub" id="notifSub">Действие выполнено</div>
   </div>
 </div>
 
 <script>
-// ============================================================
-// APP DATA
-// ============================================================
+// ====================================================
+// APP DATABASE
+// ====================================================
 const APPS = {
-  gemini: {
-    name: 'Gemini Plus',
-    sub: 'ИИ-помощник нового поколения',
-    icon: '&#x1F4AB;',
-    grad: 'grad-blue',
-    rating: '4.9',
-    size: '87 МБ',
-    age: '4+',
-    desc: 'Gemini Plus — продвинутый ИИ-помощник с расширенными возможностями. Без ограничений по запросам, доступ к Gemini Ultra, поддержка изображений и файлов. Интеграция с Google Workspace.',
-    screenshots: ['&#x1F916;','&#x1F4AC;','&#x1F5BC;','&#x1F4CA;'],
-    category: 'ИИ',
-    version: '2.0 Pro',
-  },
-  chatgpt: {
-    name: 'ChatGPT Pro',
-    sub: 'GPT-4o без ограничений',
-    icon: '&#x1F916;',
-    grad: 'grad-green',
-    rating: '4.9',
-    size: '72 МБ',
-    age: '4+',
-    desc: 'ChatGPT Pro — полный доступ к GPT-4o без суточных лимитов. DALL-E 3, Code Interpreter, анализ данных, плагины. Работает без VPN.',
-    screenshots: ['&#x1F4AC;','&#x1F5BC;','&#x1F4BB;','&#x1F4CA;'],
-    category: 'ИИ',
-    version: '4.0 Pro',
-  },
-  tiktok: {
-    name: 'TikTok Pro',
-    sub: 'Без рекламы и ограничений',
-    icon: '&#127925;',
-    grad: 'grad-gray',
-    rating: '4.7',
-    size: '230 МБ',
-    age: '12+',
-    desc: 'TikTok Pro — версия без рекламы с расширенной аналитикой, скачиванием видео без водяного знака, доступом к закрытым функциям Creator Fund.',
-    screenshots: ['&#127916;','&#127925;','&#x1F4F1;','&#x1F4CA;'],
-    category: 'Развлечения',
-    version: '32.0 Pro',
-  },
-  claude: {
-    name: 'Claude+++',
-    sub: 'Claude 3.5 Opus без лимитов',
-    icon: '&#129302;',
-    grad: 'grad-orange',
-    rating: '4.8',
-    size: '65 МБ',
-    age: '4+',
-    desc: 'Claude+++ — доступ к мощнейшей модели Claude 3.5 Opus от Anthropic. Без ограничений по токенам, расширенный контекст 200K, работа с файлами и кодом.',
-    screenshots: ['&#x1F4AC;','&#x1F4DD;','&#x1F4BB;','&#129302;'],
-    category: 'ИИ',
-    version: '3.5 Opus',
-  },
-  roblox: {
-    name: 'Roblox+++',
-    sub: 'Миллионы игр без ограничений',
-    icon: '&#x25A0;',
-    grad: 'grad-blue',
-    rating: '4.6',
-    size: '310 МБ',
-    age: '4+',
-    desc: 'Roblox+++ — неограниченный Robux, доступ ко всем Premium-играм, без рекламы. Эксклюзивные аватары и предметы.',
-    screenshots: ['&#x1F3AE;','&#x1F30D;','&#x1F47E;','&#x1F3F0;'],
-    category: 'Игры',
-    version: '2.600 Plus',
-  },
-  youtube: {
-    name: 'YouTube Pro',
-    sub: 'Premium без подписки',
-    icon: '&#9654;',
-    grad: 'grad-red',
-    rating: '4.8',
-    size: '180 МБ',
-    age: '12+',
-    desc: 'YouTube Pro — всё, что даёт YouTube Premium бесплатно. Фоновое воспроизведение, скачивание, без рекламы, 4K, HDR, возможность включения SponsorBlock.',
-    screenshots: ['&#9654;','&#x1F4FA;','&#x1F3B5;','&#x1F4F1;'],
-    category: 'Развлечения',
-    version: '19.0 Pro',
-  },
-  whatsapp: {
-    name: 'WhatsApp Pro',
-    sub: 'Мессенджер с расширенными функциями',
-    icon: '&#x1F4AC;',
-    grad: 'grad-green',
-    rating: '4.7',
-    size: '145 МБ',
-    age: '4+',
-    desc: 'WhatsApp Pro — двойной аккаунт, скрытие статуса онлайн, расширенная конфиденциальность, скачивание статусов, кастомные темы.',
-    screenshots: ['&#x1F4AC;','&#x1F4F1;','&#x1F4F7;','&#x1F512;'],
-    category: 'Общение',
-    version: '23.0 Pro',
-  },
-  tiktokmod: {
-    name: 'TikTok MOD',
-    sub: 'Модифицированная версия',
-    icon: '&#127925;',
-    grad: 'grad-gray',
-    rating: '4.5',
-    size: '245 МБ',
-    age: '12+',
-    desc: 'TikTok MOD — всё возможности Pro + анти-бан, анти-репост, скачивание любых видео, обход региональных блокировок.',
-    screenshots: ['&#127916;','&#x1F3A5;','&#127925;','&#x1F4F1;'],
-    category: 'Развлечения',
-    version: 'MOD v31.5',
-  },
-  sberkids: {
-    name: 'СберКидс+',
-    sub: 'Банк для детей — расширенный',
-    icon: '&#x1F476;',
-    grad: 'grad-green',
-    rating: '4.8',
-    size: '92 МБ',
-    age: '4+',
-    desc: 'СберКидс+ — расширенная версия с дополнительными лимитами, родительским контролем, бонусными заданиями и повышенным кешбэком.',
-    screenshots: ['&#x1F476;','&#x1F4B3;','&#x1F3AF;','&#x2B50;'],
-    category: 'Финансы',
-    version: '5.0 Plus',
-  },
-  vk: {
-    name: 'VK Плюс',
-    sub: 'ВКонтакте без рекламы',
-    icon: '&#x1F195;',
-    grad: 'grad-blue',
-    rating: '4.6',
-    size: '176 МБ',
-    age: '12+',
-    desc: 'VK Плюс — ВКонтакте без рекламы, скачивание музыки и видео, скрытие статуса онлайн, доступ к VK Combo и VK Music без подписки.',
-    screenshots: ['&#x1F195;','&#x1F3B5;','&#x1F4F9;','&#x1F5BC;'],
-    category: 'Социальные',
-    version: '8.0 Plus',
-  },
-  yandex: {
-    name: 'Яндекс Про',
-    sub: 'Суперприложение с Плюсом',
-    icon: '&#x1F9ED;',
-    grad: 'grad-red',
-    rating: '4.7',
-    size: '210 МБ',
-    age: '4+',
-    desc: 'Яндекс Про — все сервисы Яндекса с активной подпиской Плюс. Музыка, Кино, Навигатор, Маркет, Такси — всё в одном.',
-    screenshots: ['&#x1F9ED;','&#x1F3B5;','&#x1F697;','&#x1F6D2;'],
-    category: 'Сервисы',
-    version: '24.0 Pro',
-  },
-  telegram: {
-    name: 'Telegram++++',
-    sub: 'Максимальная версия Telegram',
-    icon: '&#x2708;&#xFE0F;',
-    grad: 'grad-blue',
-    rating: '4.9',
-    size: '98 МБ',
-    age: '4+',
-    desc: 'Telegram++++ — Premium навсегда, без рекламы, 8 ГБ облака, скрытый статус, переводчик, расширенные реакции, эксклюзивные стикеры, API-боты без лимитов.',
-    screenshots: ['&#x2708;','&#x1F4AC;','&#x1F512;','&#x1F916;'],
-    category: 'Общение',
-    version: '10.0++++',
-  },
-  standoff: {
-    name: 'Stand-off 2 Plus',
-    sub: 'Шутер с читами',
-    icon: '&#x1F52B;',
-    grad: 'grad-red',
-    rating: '4.5',
-    size: '1.8 ГБ',
-    age: '16+',
-    desc: 'Stand-off 2 Plus — неограниченные монеты и золото, все скины, автоприцел, карты, турниры. Мультиплеер работает.',
-    screenshots: ['&#x1F52B;','&#x1F3AE;','&#x1F4A5;','&#x1F3C6;'],
-    category: 'Игры',
-    version: '1.35 Plus',
-  },
-  minecraft: {
-    name: 'Minecraft+',
-    sub: 'Полная версия без покупок',
-    icon: '&#x26CF;',
-    grad: 'grad-green',
-    rating: '4.9',
-    size: '650 МБ',
-    age: '7+',
-    desc: 'Minecraft+ — все DLC, скины, текстуры, мир-пак Marketplace разблокирован. Multiplayer сервера. Читмоды опционально.',
-    screenshots: ['&#x26CF;','&#x1F333;','&#x1F30D;','&#x1F6F8;'],
-    category: 'Игры',
-    version: '1.21 Plus',
-  },
-  insta: {
-    name: 'Insta+++',
-    sub: 'Instagram без ограничений',
-    icon: '&#x1F4F7;',
-    grad: 'grad-pink',
-    rating: '4.6',
-    size: '195 МБ',
-    age: '12+',
-    desc: 'Insta+++ — скачивание фото и видео, скрытие статуса онлайн, просмотр историй анонимно, инструменты для продвижения, без рекламы.',
-    screenshots: ['&#x1F4F7;','&#x1F4F9;','&#x2764;','&#x1F30D;'],
-    category: 'Фото',
-    version: '320 Plus',
-  },
-  wb: {
-    name: 'WB+',
-    sub: 'Wildberries с бонусами',
-    icon: '&#x1F6CD;',
-    grad: 'grad-purple',
-    rating: '4.5',
-    size: '118 МБ',
-    age: '4+',
-    desc: 'WB+ — Wildberries с расширенным кешбэком до 30%, доступ к закрытым распродажам, аналитика цен, сравнение товаров.',
-    screenshots: ['&#x1F6CD;','&#x1F4E6;','&#x1F4B0;','&#x2B50;'],
-    category: 'Покупки',
-    version: '6.0 Plus',
-  },
-  ozon: {
-    name: 'OZON+++',
-    sub: 'OZON Premium навсегда',
-    icon: '&#x1F4E6;',
-    grad: 'grad-blue',
-    rating: '4.6',
-    size: '122 МБ',
-    age: '4+',
-    desc: 'OZON+++ — OZON Premium без оплаты, повышенный кешбэк, приоритетная доставка, скрытые распродажи, аналитика цен.',
-    screenshots: ['&#x1F4E6;','&#x1F6D2;','&#x1F4B3;','&#x2B50;'],
-    category: 'Покупки',
-    version: '17.0+++',
-  },
-  avito: {
-    name: 'Авито',
-    sub: 'Объявления без лимитов',
-    icon: '&#x1F3E0;',
-    grad: 'grad-green',
-    rating: '4.5',
-    size: '88 МБ',
-    age: '4+',
-    desc: 'Авито — неограниченные объявления, доступ к скрытым контактам без оплаты, история изменения цен, расширенный поиск.',
-    screenshots: ['&#x1F3E0;','&#x1F697;','&#x1F4BB;','&#x1F4F1;'],
-    category: 'Сервисы',
-    version: '12.5 Pro',
-  },
-  yula: {
-    name: 'Юла+++',
-    sub: 'Доска объявлений Pro',
-    icon: '&#x1F4B0;',
-    grad: 'grad-orange',
-    rating: '4.3',
-    size: '76 МБ',
-    age: '4+',
-    desc: 'Юла+++ — безлимитные объявления, поднятие в топ бесплатно, расширенный поиск по скрытым объявлениям.',
-    screenshots: ['&#x1F4B0;','&#x1F3E0;','&#x1F4E6;','&#x1F697;'],
-    category: 'Покупки',
-    version: '4.0+++',
-  },
-  esign: {
-    name: 'ESign+++',
-    sub: 'Установка .ipa без ПК',
-    icon: '&#x270D;',
-    grad: 'grad-purple',
-    rating: '4.8',
-    size: '24 МБ',
-    age: '4+',
-    desc: 'ESign+++ — самый мощный подписчик приложений прямо на устройстве. Импорт сертификатов, переподпись IPA, сборка приложений. Без компьютера.',
-    screenshots: ['&#x270D;','&#x1F4DD;','&#x2699;','&#x1F512;'],
-    category: 'Утилиты',
-    version: '5.0+++',
-  },
-  jailbreak: {
-    name: 'Jailbreak +++ ',
-    sub: 'iOS 26 - iOS 27 Developer Preview',
-    icon: '&#x1F513;',
-    grad: 'grad-green',
-    rating: '4.9',
-    size: '48 МБ',
-    age: '17+',
-    desc: 'Jailbreak+++ — поддержка iOS 26 и iOS 27 Developer Preview. Полный root-доступ, Cydia, Sileo, твики, темы, удаление ограничений Apple. Безопасный и стабильный.',
-    screenshots: ['&#x1F513;','&#x2699;','&#x1F4BB;','&#x1F30D;'],
-    category: 'Утилиты',
-    version: '26.0+++',
-  },
-  shazam: {
-    name: 'Shazam*',
-    sub: 'Распознавание музыки Pro',
-    icon: '&#x1F3B5;',
-    grad: 'grad-blue',
-    rating: '4.8',
-    size: '65 МБ',
-    age: '4+',
-    desc: 'Shazam* — расширенная версия с историей, синхронизацией плейлистов, оффлайн-режимом и интеграцией с Apple Music и Spotify без ограничений.',
-    screenshots: ['&#x1F3B5;','&#x1F399;','&#x1F4CA;','&#x2B50;'],
-    category: 'Музыка',
-    version: '15.0 Star',
-  },
-  applemusic: {
-    name: 'Apple Music+++',
-    sub: 'Безлимитная музыка',
-    icon: '&#x1F3B6;',
-    grad: 'grad-red',
-    rating: '4.8',
-    size: '76 МБ',
-    age: '4+',
-    desc: 'Apple Music+++ — 100 млн треков без подписки, скачивание, пространственный звук, Lossless, Dolby Atmos. Семейный план навсегда.',
-    screenshots: ['&#x1F3B6;','&#x1F399;','&#x1F4FB;','&#x2764;'],
-    category: 'Музыка',
-    version: '4.0+++',
-  },
-  sertifikat: {
-    name: 'СертификатIOS+++',
-    sub: 'Управление сертификатами',
-    icon: '&#x1F4DC;',
-    grad: 'grad-teal',
-    rating: '4.7',
-    size: '18 МБ',
-    age: '4+',
-    desc: 'СертификатIOS+++ — создание и управление iOS-сертификатами прямо на устройстве. Генерация P12, CSR, профилей. Обход отзыва сертификатов.',
-    screenshots: ['&#x1F4DC;','&#x1F512;','&#x2699;','&#x1F4BB;'],
-    category: 'Утилиты',
-    version: '3.0+++',
-  },
-  games: {
-    name: 'Games++++++++++++',
-    sub: 'Всё лучшее в одном',
-    icon: '&#x1F579;',
-    grad: 'grad-purple',
-    rating: '4.9',
-    size: '2.1 ГБ',
-    age: '4+',
-    desc: 'Games+++++++++++++ — суперколлекция из 500+ игр с читами, неограниченными ресурсами, разблокированными уровнями и Premium-контентом.',
-    screenshots: ['&#x1F579;','&#x1F3AE;','&#x1F3C6;','&#x1F4A5;'],
-    category: 'Игры',
-    version: 'MEGA Edition',
-  },
-  xiaomi: {
-    name: 'Xiaomi Sound Pocket',
-    sub: 'Аудио от Xiaomi',
-    icon: '&#x1F50A;',
-    grad: 'grad-orange',
-    rating: '4.4',
-    size: '42 МБ',
-    age: '4+',
-    desc: 'Xiaomi Sound Pocket — приложение для управления колонками Xiaomi, эквалайзер, просмотр заряда, подключение нескольких устройств.',
-    screenshots: ['&#x1F50A;','&#x1F3B5;','&#x1F4F1;','&#x2699;'],
-    category: 'Музыка',
-    version: '1.5 Pro',
-  },
-  // EXTRA APPS
-  spotify: {
-    name: 'Spotify+++',
-    sub: 'Музыка без ограничений',
-    icon: '&#x1F49A;',
-    grad: 'grad-green',
-    rating: '4.8',
-    size: '136 МБ',
-    age: '4+',
-    desc: 'Spotify+++ — Premium навсегда без подписки. Без рекламы, оффлайн, неограниченные пропуски, высокое качество звука.',
-    screenshots: ['&#x1F49A;','&#x1F3B5;','&#x1F4FB;','&#x1F4CA;'],
-    category: 'Музыка',
-    version: '8.9 Plus',
-  },
-  netflix: {
-    name: 'Netflix Pro',
-    sub: 'Кино без подписки',
-    icon: '&#x1F3AC;',
-    grad: 'grad-red',
-    rating: '4.7',
-    size: '188 МБ',
-    age: '16+',
-    desc: 'Netflix Pro — доступ ко всему контенту без подписки, скачивание, 4K Ultra HD, все профили, смена региона в 1 клик.',
-    screenshots: ['&#x1F3AC;','&#x1F4FA;','&#x2B50;','&#x1F30D;'],
-    category: 'Развлечения',
-    version: '8.0 Pro',
-  },
-  maps: {
-    name: 'Яндекс Карты Pro',
-    sub: 'Навигация без рекламы',
-    icon: '&#x1F5FA;',
-    grad: 'grad-red',
-    rating: '4.7',
-    size: '156 МБ',
-    age: '4+',
-    desc: 'Яндекс Карты Pro — без рекламы, оффлайн-карты любого региона, расширенные маршруты, пробки в реальном времени.',
-    screenshots: ['&#x1F5FA;','&#x1F697;','&#x1F6F6;','&#x1F4CD;'],
-    category: 'Навигация',
-    version: '19.0 Pro',
-  },
-  bank: {
-    name: 'СберБанк Pro',
-    sub: 'Банк без лимитов',
-    icon: '&#x1F4B3;',
-    grad: 'grad-green',
-    rating: '4.6',
-    size: '110 МБ',
-    age: '12+',
-    desc: 'СберБанк Pro — снятие лимитов на переводы, расширенная аналитика расходов, автоплатежи, эксклюзивные предложения Прайм.',
-    screenshots: ['&#x1F4B3;','&#x1F4B0;','&#x1F4CA;','&#x1F512;'],
-    category: 'Финансы',
-    version: '15.5 Pro',
-  },
+  gemini:{name:'Gemini Plus',sub:'ИИ-помощник нового поколения',grad:'g-indigo',rating:'4.9',size:'87 МБ',age:'4+',cat:'ИИ',ver:'2.0 Pro',
+    desc:'Gemini Plus — продвинутый ИИ-помощник. Без лимитов, доступ к Gemini Ultra, поддержка изображений и файлов. Интеграция с сервисами. Расширенный контекст, работа с кодом, аналитика данных.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M23 5L5 23L23 41L41 23L23 5Z" stroke="white" stroke-width="2.5" fill="none"/><circle cx="23" cy="23" r="8" fill="rgba(255,255,255,.85)"/><circle cx="23" cy="23" r="3.5" fill="#5e5ce6"/></svg>`,
+    scr:['#1a0a4a','#0a1a5e','#1a1a40','#2a0a3a']},
+  chatgpt:{name:'ChatGPT Pro',sub:'GPT-4o без суточных лимитов',grad:'g-green',rating:'4.9',size:'72 МБ',age:'4+',cat:'ИИ',ver:'4.0 Pro',
+    desc:'ChatGPT Pro — полный GPT-4o без ограничений. DALL-E 3, Code Interpreter, анализ данных, плагины. Работает без VPN. Голосовой режим, расширенная память.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="14" stroke="white" stroke-width="2.5" fill="none"/><path d="M15 23h16M23 15v16" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    scr:['#0a2a12','#0a3a12','#051a08','#0a2a0a']},
+  tiktok:{name:'TikTok Pro',sub:'Без рекламы, скачивание видео',grad:'g-dark',rating:'4.7',size:'230 МБ',age:'12+',cat:'Развлечения',ver:'32 Pro',
+    desc:'TikTok Pro — без рекламы, скачивание без водяного знака, расширенная аналитика Creator, доступ к закрытым функциям, двойной аккаунт.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M20 8h8v18a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8V14a14 14 0 0 0-14 14 14 14 0 0 0 14 14 14 14 0 0 0 14-14V14a14 14 0 0 0 8 2.5V8a8 8 0 0 1-8-8H20v8z" fill="white" stroke="none"/></svg>`,
+    scr:['#1a1a1a','#111','#0a0a0a','#151515']},
+  claude:{name:'Claude+++',sub:'Claude 3.5 Opus без лимитов',grad:'g-orange',rating:'4.8',size:'65 МБ',age:'4+',cat:'ИИ',ver:'3.5 Opus',
+    desc:'Claude+++ — Claude 3.5 Opus от Anthropic без лимитов токенов. Контекст 200K, работа с файлами, кодом, аналитикой. Безопасная и умная модель.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="10" y="6" width="26" height="34" rx="5" stroke="white" stroke-width="2.5" fill="none"/><path d="M16 18h14M16 24h10M16 30h7" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
+    scr:['#3a1a00','#2a1200','#4a2200','#2e1500']},
+  roblox:{name:'Roblox+++',sub:'Миллионы игр без ограничений',grad:'g-blue',rating:'4.6',size:'310 МБ',age:'4+',cat:'Игры',ver:'2.600 Plus',
+    desc:'Roblox+++ — неограниченный Robux, доступ ко всем Premium-играм, без рекламы. Эксклюзивные аватары, доступ к Developer Mode, мультиплеер.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="11" y="11" width="24" height="24" fill="none" stroke="white" stroke-width="3"/><rect x="18" y="18" width="10" height="10" fill="white"/></svg>`,
+    scr:['#0a1a3e','#0a244a','#051230','#0d1e48']},
+  youtube:{name:'YouTube Pro',sub:'Premium без подписки',grad:'g-red',rating:'4.8',size:'180 МБ',age:'12+',cat:'Развлечения',ver:'19 Pro',
+    desc:'YouTube Pro — всё от Premium бесплатно. Фоновое воспроизведение, скачивание, без рекламы, 4K HDR, SponsorBlock, ReturnYouTubeDislike.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="4" y="9" width="38" height="28" rx="7" stroke="white" stroke-width="2" fill="none"/><path d="M18 16l14 7-14 7V16Z" fill="white"/></svg>`,
+    scr:['#3a0a0a','#4a0808','#2a0606','#380a0a']},
+  whatsapp:{name:'WhatsApp Pro',sub:'Двойной аккаунт и конфиденциальность',grad:'g-green',rating:'4.7',size:'145 МБ',age:'4+',cat:'Общение',ver:'23 Pro',
+    desc:'WhatsApp Pro — двойной аккаунт, скрытие статуса онлайн, скачивание статусов, кастомные темы, расширенная конфиденциальность.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="17" stroke="white" stroke-width="2" fill="none"/><path d="M14 28l2-5 6 3 5-6 3 8-8-1-8 1z" fill="white" stroke="none"/></svg>`,
+    scr:['#0a2e12','#0a3614','#05200a','#0d2e10']},
+  tiktokmod:{name:'TikTok MOD',sub:'Модифицированная версия',grad:'g-dark',rating:'4.5',size:'245 МБ',age:'12+',cat:'Развлечения',ver:'MOD v31.5',
+    desc:'TikTok MOD — все функции Pro плюс: анти-бан, скачивание любых видео, обход региональных блокировок, расширенные фильтры.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M20 8h8v18a8 8 0 0 1-8 8 8 8 0 0 1-8-8 8 8 0 0 1 8-8V14a14 14 0 0 0-14 14 14 14 0 0 0 14 14 14 14 0 0 0 14-14V14a14 14 0 0 0 8 2.5V8a8 8 0 0 1-8-8H20v8z" fill="white" stroke="none"/></svg>`,
+    scr:['#1a1a1a','#111','#0a0a0a','#1c1c1c']},
+  sberkids:{name:'СберКидс+',sub:'Банк для детей — расширенный',grad:'g-green',rating:'4.8',size:'92 МБ',age:'4+',cat:'Финансы',ver:'5.0 Plus',
+    desc:'СберКидс+ — расширенные лимиты, родительский контроль, бонусные задания, повышенный кешбэк, финансовое обучение.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="18" r="8" stroke="white" stroke-width="2.5" fill="none"/><path d="M10 40c0-7.2 5.8-13 13-13s13 5.8 13 13" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+    scr:['#0a2a10','#0d3412','#082008','#0a2e0c']},
+  vk:{name:'VK Плюс',sub:'ВКонтакте без рекламы',grad:'g-blue',rating:'4.6',size:'176 МБ',age:'12+',cat:'Социальные',ver:'8.0 Plus',
+    desc:'VK Плюс — без рекламы, скачивание музыки и видео, скрытие онлайна, VK Combo, VK Music без подписки, кастомные темы.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="5" y="5" width="36" height="36" rx="9" stroke="white" stroke-width="2" fill="none"/><path d="M9 17h4l4 7 4-7h4l-6 12H15L9 17Z" fill="white" stroke="none"/></svg>`,
+    scr:['#0a1a3e','#0a204a','#051230','#0e1e48']},
+  yandex:{name:'Яндекс Про',sub:'Суперприложение с Плюсом',grad:'g-red',rating:'4.7',size:'210 МБ',age:'4+',cat:'Сервисы',ver:'24 Pro',
+    desc:'Яндекс Про — Яндекс Плюс навсегда: Музыка, Кино, Навигатор, Маркет, Такси, Доставка. Всё в одном без ограничений.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M23 6L8 38h7l4-9h8l4 9h7L23 6Z" fill="white" stroke="none"/><path d="M18 23l5-11 5 11" stroke="none" fill="rgba(0,0,0,0.3)"/></svg>`,
+    scr:['#3a0808','#440a0a','#2a0606','#3e0808']},
+  telegram:{name:'Telegram++++',sub:'Premium навсегда без оплаты',grad:'g-blue',rating:'4.9',size:'98 МБ',age:'4+',cat:'Общение',ver:'10.0++++',
+    desc:'Telegram++++ — Premium навсегда: без рекламы, 8 ГБ облака, скрытый статус, переводчик, стикеры, реакции, боты без лимитов.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M4 22L42 8L30 40L22 30L4 22Z" stroke="white" stroke-width="2" stroke-linejoin="round" fill="none"/><path d="M22 30L30 40" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M4 22L22 30" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+    scr:['#0a1a3e','#0a204a','#051230','#0c1e4a']},
+  standoff:{name:'Stand-off 2 Plus',sub:'Читы и неограниченные ресурсы',grad:'g-red',rating:'4.5',size:'1.8 ГБ',age:'16+',cat:'Игры',ver:'1.35 Plus',
+    desc:'Standoff 2 Plus — неограниченные монеты и золото, все скины, автоприцел, карты, турниры. Мультиплеер сохранён.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M8 36L23 8L38 36" stroke="white" stroke-width="2.5" stroke-linejoin="round" fill="none"/><line x1="13" y1="26" x2="33" y2="26" stroke="white" stroke-width="2"/></svg>`,
+    scr:['#2a0808','#340a0a','#200606','#2e0808']},
+  minecraft:{name:'Minecraft+',sub:'Полная версия без покупок',grad:'g-green',rating:'4.9',size:'650 МБ',age:'7+',cat:'Игры',ver:'1.21 Plus',
+    desc:'Minecraft+ — все DLC, скины, текстуры, Marketplace разблокирован. Multiplayer, читмоды опционально, все режимы.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="8" y="8" width="30" height="30" stroke="white" stroke-width="2.5" fill="none"/><rect x="14" y="14" width="9" height="9" fill="rgba(255,255,255,.45)"/><rect x="23" y="23" width="9" height="9" fill="rgba(255,255,255,.45)"/></svg>`,
+    scr:['#0a2a0a','#0d3412','#082008','#0a300c']},
+  insta:{name:'Insta+++',sub:'Instagram без ограничений',grad:'g-pink',rating:'4.6',size:'195 МБ',age:'12+',cat:'Фото',ver:'320 Plus',
+    desc:'Insta+++ — скачивание фото и видео, просмотр историй анонимно, без рекламы, инструменты продвижения, кастомные темы.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="7" y="7" width="32" height="32" rx="9" stroke="white" stroke-width="2.5" fill="none"/><circle cx="23" cy="23" r="8" stroke="white" stroke-width="2" fill="none"/><circle cx="33" cy="13" r="2" fill="white"/></svg>`,
+    scr:['#3a0a28','#440a30','#2a0620','#3e0a2c']},
+  wb:{name:'WB+',sub:'Wildberries с бонусами',grad:'g-purple',rating:'4.5',size:'118 МБ',age:'4+',cat:'Покупки',ver:'6.0 Plus',
+    desc:'WB+ — кешбэк до 30%, закрытые распродажи, аналитика цен, сравнение товаров, приоритетная доставка.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M8 12h30l-4 22H12L8 12Z" stroke="white" stroke-width="2" fill="none" stroke-linejoin="round"/><path d="M4 12h38" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="40" r="2.5" fill="white"/><circle cx="30" cy="40" r="2.5" fill="white"/></svg>`,
+    scr:['#2a0a5e','#34106e','#200640','#2e0c62']},
+  ozon:{name:'OZON+++',sub:'OZON Premium навсегда',grad:'g-blue',rating:'4.6',size:'122 МБ',age:'4+',cat:'Покупки',ver:'17.0+++',
+    desc:'OZON+++ — Premium без оплаты, повышенный кешбэк, приоритетная доставка, скрытые распродажи, аналитика цен.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="8" y="14" width="30" height="20" rx="5" stroke="white" stroke-width="2.5" fill="none"/><path d="M17 14V11a6 6 0 0 1 12 0v3" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    scr:['#0a1a3e','#0a204a','#051230','#0d1e4a']},
+  avito:{name:'Авито',sub:'Объявления без лимитов',grad:'g-green',rating:'4.5',size:'88 МБ',age:'4+',cat:'Сервисы',ver:'12.5 Pro',
+    desc:'Авито — неограниченные объявления, скрытые контакты бесплатно, история изменения цен, расширенный поиск.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="6" y="9" width="34" height="28" rx="5" stroke="white" stroke-width="2" fill="none"/><path d="M6 19h34" stroke="white" stroke-width="1.5"/><path d="M15 29h6M25 29h6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
+    scr:['#0a2a10','#0d3412','#082008','#0a2e0c']},
+  yula:{name:'Юла+++',sub:'Доска объявлений Pro',grad:'g-orange',rating:'4.3',size:'76 МБ',age:'4+',cat:'Покупки',ver:'4.0+++',
+    desc:'Юла+++ — безлимитные объявления, поднятие в топ бесплатно, расширенный поиск, скрытые объявления.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="15" stroke="white" stroke-width="2.5" fill="none"/><path d="M23 14v9l6 6" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    scr:['#3a1800','#442000','#2a1200','#3e1c00']},
+  esign:{name:'ESign+++',sub:'Установка .ipa без ПК',grad:'g-purple',rating:'4.8',size:'24 МБ',age:'4+',cat:'Утилиты',ver:'5.0+++',
+    desc:'ESign+++ — самый мощный подписчик приложений прямо на iPhone. Импорт сертификатов, переподпись IPA, сборка приложений. Без компьютера.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M10 32L16 26L32 10L36 14L20 30L10 32Z" stroke="white" stroke-width="2.5" fill="none" stroke-linejoin="round"/><path d="M10 32v6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`,
+    scr:['#2a0a5e','#34106e','#200640','#2e0c62']},
+  jailbreak:{name:'Jailbreak +++',sub:'iOS 26 — iOS 27 Developer Preview',grad:'g-green',rating:'4.9',size:'48 МБ',age:'17+',cat:'Утилиты',ver:'26.0+++',
+    desc:'Jailbreak+++ — поддержка iOS 26 и iOS 27 Developer Preview. Полный root-доступ, Cydia, Sileo, твики, темы. Безопасный и стабильный метод.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="13" y="5" width="20" height="28" rx="4" stroke="white" stroke-width="2.5" fill="none"/><path d="M18 33v5a5 5 0 0 0 10 0v-5" stroke="white" stroke-width="2.5" stroke-linecap="round"/><circle cx="23" cy="19" r="4" fill="rgba(48,209,88,0.9)"/><path d="M20 19l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    scr:['#0a2a0a','#0d3412','#082008','#0a300c']},
+  shazam:{name:'Shazam*',sub:'Распознавание музыки Pro',grad:'g-blue',rating:'4.8',size:'65 МБ',age:'4+',cat:'Музыка',ver:'15.0 Star',
+    desc:'Shazam* — расширенная версия с историей, синхронизацией плейлистов, оффлайн-режимом и интеграцией с Apple Music и Spotify без ограничений.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="15" stroke="white" stroke-width="2.5" fill="none"/><path d="M16 21c0-3.9 3.1-7 7-7s7 3.1 7 7M13 25c0 5.5 4.5 10 10 10s10-4.5 10-10" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+    scr:['#0a1a3e','#0a204a','#051230','#0c1e48']},
+  applemusic:{name:'Apple Music+++',sub:'100 млн треков без подписки',grad:'g-red',rating:'4.8',size:'76 МБ',age:'4+',cat:'Музыка',ver:'4.0+++',
+    desc:'Apple Music+++ — 100 млн треков, скачивание, пространственный звук, Lossless, Dolby Atmos, Семейный план навсегда.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M12 32V18l22-5v16" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10" cy="33" r="5" stroke="white" stroke-width="2" fill="none"/><circle cx="32" cy="30" r="5" stroke="white" stroke-width="2" fill="none"/></svg>`,
+    scr:['#3a0808','#440a0a','#2a0606','#3e0808']},
+  sertifikat:{name:'СертификатIOS+++',sub:'Управление сертификатами',grad:'g-teal',rating:'4.7',size:'18 МБ',age:'4+',cat:'Утилиты',ver:'3.0+++',
+    desc:'СертификатIOS+++ — создание и управление iOS-сертификатами на устройстве. Генерация P12, CSR, профилей. Обход отзыва.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="8" y="5" width="30" height="36" rx="5" stroke="white" stroke-width="2.5" fill="none"/><path d="M15 16h16M15 22h12M15 28h8" stroke="white" stroke-width="2" stroke-linecap="round"/><circle cx="33" cy="35" r="7" fill="#40c8e0" stroke="white" stroke-width="2"/><path d="M30 35l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    scr:['#0a2e38','#0a3840','#052028','#0c303e']},
+  games:{name:'Games++++++++++++',sub:'500+ игр с читами',grad:'g-purple',rating:'4.9',size:'2.1 ГБ',age:'4+',cat:'Игры',ver:'MEGA Edition',
+    desc:'Games+++++++++++++ — 500+ игр с неограниченными ресурсами, разблокированными уровнями и Premium-контентом. Один архив — всё лучшее.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="15" stroke="white" stroke-width="2.5" fill="none"/><path d="M15 23h16M23 15v16" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+    scr:['#2a0a5e','#34106e','#200640','#2e0c62']},
+  xiaomi:{name:'Xiaomi Sound Pocket',sub:'Управление колонками Xiaomi',grad:'g-orange',rating:'4.4',size:'42 МБ',age:'4+',cat:'Музыка',ver:'1.5 Pro',
+    desc:'Xiaomi Sound Pocket — управление колонками Xiaomi, эквалайзер, заряд, несколько устройств, кастомизация звука.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><rect x="10" y="8" width="26" height="30" rx="8" stroke="white" stroke-width="2.5" fill="none"/><circle cx="23" cy="25" r="7" stroke="white" stroke-width="2" fill="none"/><circle cx="23" cy="14" r="2.5" fill="white"/><circle cx="23" cy="25" r="2.5" fill="white"/></svg>`,
+    scr:['#3a1800','#442000','#2a1200','#3e1c00']},
+  spotify:{name:'Spotify+++',sub:'Музыка без рекламы навсегда',grad:'g-green',rating:'4.8',size:'136 МБ',age:'4+',cat:'Музыка',ver:'8.9 Plus',
+    desc:'Spotify+++ — Premium навсегда без подписки. Без рекламы, оффлайн, неограниченные пропуски, высокое качество.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><circle cx="23" cy="23" r="15" stroke="white" stroke-width="2.5" fill="none"/><path d="M13 18c5-2 15-2 20 2M12 24c5-2 16-1 21 2M13 30c4-1 14-1 18 1" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,
+    scr:['#0a2a10','#0d3412','#082008','#0a2c0e']},
+  netflix:{name:'Netflix Pro',sub:'Кино без подписки',grad:'g-red',rating:'4.7',size:'188 МБ',age:'16+',cat:'Развлечения',ver:'8.0 Pro',
+    desc:'Netflix Pro — весь контент без подписки, скачивание, 4K Ultra HD, смена региона каталога одним кликом.',
+    icon:`<svg viewBox="0 0 46 46" fill="none"><path d="M14 7v32l9-14 9 14V7" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    scr:['#3a0808','#440a0a','#2a0606','#380808']},
 };
 
-const appIds = Object.keys(APPS);
+const ALL_IDS = Object.keys(APPS);
 
-// ============================================================
-// INSTALL STATE
-// ============================================================
-const installed = new Set();
-const homeApps = [];
+// ====================================================
+// STATE
+// ====================================================
+let installed = new Set();
+let currentInstallId = null;
+let profileDlInterval = null;
+let notifTimer = null;
+let currentRegion = 'Россия';
 
-// ============================================================
+const REGIONS = ['Россия','США','Великобритания','Германия','Япония','Китай','Казахстан','Беларусь','Франция','Турция','ОАЭ'];
+
+// ====================================================
 // LOGIN
-// ============================================================
-function doLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const pass = document.getElementById('loginPass').value;
-  if (!email || !pass) {
-    shakeLogo();
-    return;
-  }
-  // Extract name from email
-  const namePart = email.split('@')[0];
-  const displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-  document.getElementById('accName').textContent = displayName || 'ApplePlus User';
-
-  // Show congrats
+// ====================================================
+function doLogin(){
+  const em = document.getElementById('loginEmail').value.trim();
+  const ps = document.getElementById('loginPass').value;
+  if(!em || !ps){ shakeForm(); return; }
+  const uname = em.split('@')[0];
+  const disp = uname.charAt(0).toUpperCase()+uname.slice(1);
+  document.getElementById('accName').textContent = disp;
+  const ini = (disp.charAt(0)+(disp.charAt(1)||'')).toUpperCase();
+  document.getElementById('accAvatar').textContent = ini;
   showScreen('congratsScreen');
 }
-
-function shakeLogo() {
-  const logo = document.querySelector('.login-logo');
-  logo.style.animation = 'shake 0.4s ease';
-  setTimeout(() => { logo.style.animation = 'logoPulse 3s ease-in-out infinite'; }, 400);
+function shakeForm(){
+  const f = document.querySelector('.login-form');
+  f.style.animation='shake .4s ease';
+  setTimeout(()=>f.style.animation='',400);
+}
+function gotoMain(){
+  hideAllScreens();
+  document.getElementById('mainApp').style.display='flex';
+  requestAnimationFrame(()=>document.getElementById('mainApp').style.opacity='1');
+  initApp();
+  tickClock();
+  setInterval(tickClock,1000);
 }
 
-const shakeCSS = document.createElement('style');
-shakeCSS.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }';
-document.head.appendChild(shakeCSS);
-
-function gotoMain() {
-  showScreen(null); // hide all
-  document.getElementById('mainApp').classList.add('active');
-  initMainApp();
-  updateClock();
-  setInterval(updateClock, 1000);
+// ====================================================
+// SCREENS
+// ====================================================
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
+  const el=document.getElementById(id);
+  el.style.display='flex';
+  requestAnimationFrame(()=>el.classList.add('active'));
+}
+function hideAllScreens(){
+  document.querySelectorAll('.screen').forEach(s=>{s.classList.remove('active');s.style.display='none';});
 }
 
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => {
-    s.classList.remove('active');
-    s.style.display = 'none';
-  });
-  if (id) {
-    const el = document.getElementById(id);
-    el.style.display = 'flex';
-    requestAnimationFrame(() => el.classList.add('active'));
-  }
-}
-
-// ============================================================
+// ====================================================
 // CLOCK
-// ============================================================
-function updateClock() {
-  const now = new Date();
-  const t = now.toLocaleTimeString('ru', {hour:'2-digit', minute:'2-digit'});
-  const d = now.toLocaleDateString('ru', {weekday:'long', day:'numeric', month:'long'});
-  const el = document.getElementById('statusTime');
-  if (el) el.textContent = t;
-  const ht = document.getElementById('homeTime');
-  if (ht) ht.textContent = t;
-  const hst = document.getElementById('homeStatusTime');
-  if (hst) hst.textContent = t;
-  const hd = document.getElementById('homeDate');
-  if (hd) hd.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+// ====================================================
+function tickClock(){
+  const n=new Date();
+  const t=n.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'});
+  const el=document.getElementById('statusTime');
+  if(el) el.textContent=t;
 }
 
-// ============================================================
-// INIT MAIN APP
-// ============================================================
-function initMainApp() {
-  // Main app list
-  buildAppList('mainAppList', ['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat']);
-  // Games
-  buildAppList('gamesAppList', ['roblox','standoff','minecraft','games','tiktokmod','jailbreak']);
-  // Apps tab
-  buildAppList('appsTabList', ['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','maps','bank','xiaomi','shazam','applemusic']);
-  // Search recommend
-  buildAppList('searchRecommend', ['gemini','chatgpt','claude','telegram','roblox','youtube'], true);
-  // Region grid
-  buildRegionGrid();
+// ====================================================
+// INIT
+// ====================================================
+function initApp(){
+  buildList('listToday',['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat','jailbreak','shazam']);
+  buildList('listGames',['roblox','standoff','minecraft','games','tiktokmod']);
+  buildList('listApps',['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','yandex','xiaomi','applemusic']);
+  buildList('listSearch',['gemini','chatgpt','claude','telegram','roblox','youtube','insta'],true);
+  buildRegions();
 }
 
-function buildAppList(containerId, ids, small) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '';
-  ids.forEach(id => {
-    const app = APPS[id];
-    if (!app) return;
-    const isInst = installed.has(id);
-    const row = document.createElement('div');
-    row.className = 'app-row';
-    row.innerHTML = `
-      <div class="app-icon ${app.grad}" onclick="openAppDetail('${id}')">${app.icon}</div>
-      <div class="app-info" onclick="openAppDetail('${id}')">
-        <div class="app-name">${app.name}</div>
-        <div class="app-desc">${app.sub}</div>
-        ${!small ? `<div class="app-desc-small">Встроенные покупки</div>` : ''}
+// ====================================================
+// BUILD APP LIST
+// ====================================================
+function buildList(id, ids, small){
+  const c=document.getElementById(id);
+  if(!c) return;
+  c.innerHTML='';
+  ids.forEach((aid,i)=>{
+    const a=APPS[aid];
+    if(!a) return;
+    const inst=installed.has(aid);
+    const row=document.createElement('div');
+    row.className='app-row';
+    row.innerHTML=`
+      <div class="app-icon-wrap ${a.grad}" onclick="openDetail('${aid}')" style="cursor:pointer;">${a.icon}</div>
+      <div class="app-info" onclick="openDetail('${aid}')">
+        <div class="app-name">${a.name}</div>
+        <div class="app-desc">${a.sub}</div>
+        ${!small?`<div class="app-desc2">Встроенные покупки</div>`:''}
       </div>
-      <div>
-        <button class="dl-btn" id="dlbtn-${id}-${containerId}" onclick="installAppBtn('${id}',this)">${isInst ? 'Открыть' : 'Загрузить'}</button>
-        ${!small && isInst ? '<div style="font-size:10px;color:var(--sub);text-align:center;margin-top:2px;">Установлено</div>' : ''}
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <button class="dl-btn ${inst?'open-state':''}" id="lb-${aid}-${id}" onclick="confirmInstall('${aid}',this)">${inst?'Открыть':'Загрузить'}</button>
       </div>
     `;
-    container.appendChild(row);
-    // Divider
-    const div = document.createElement('div');
-    div.style.cssText = 'height:1px;background:var(--border);margin-left:74px;';
-    container.appendChild(div);
+    c.appendChild(row);
+    if(i<ids.length-1){const d=document.createElement('div');d.style.cssText='height:1px;background:var(--border);margin-left:76px;';c.appendChild(d);}
   });
 }
 
-// ============================================================
-// TAB SWITCHING
-// ============================================================
-function switchTab(name) {
-  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab' + name).classList.add('active');
-  document.getElementById('tabBtn' + name).classList.add('active');
+function rebuildAll(){
+  buildList('listToday',['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat','jailbreak','shazam']);
+  buildList('listGames',['roblox','standoff','minecraft','games','tiktokmod']);
+  buildList('listApps',['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','yandex','xiaomi','applemusic']);
+  buildList('listSearch',['gemini','chatgpt','claude','telegram','roblox','youtube','insta'],true);
 }
 
-// ============================================================
-// APP DETAIL
-// ============================================================
-function openAppDetail(id) {
-  const app = APPS[id];
-  if (!app) return;
-  const isInst = installed.has(id);
-  const overlay = document.getElementById('appDetailOverlay');
-  const content = document.getElementById('detailContent');
+// ====================================================
+// TAB SWITCHING
+// ====================================================
+function switchTab(name){
+  document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab'+name).classList.add('active');
+  document.getElementById('btn'+name).classList.add('active');
+}
 
-  // Screenshots HTML
-  let screenshotsHtml = app.screenshots.map(s => `
-    <div class="screenshot">
-      <div style="font-size:60px;text-align:center;">${s}</div>
-      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,0.4);">${app.name}</div>
+// ====================================================
+// APP DETAIL
+// ====================================================
+function openDetail(id){
+  const a=APPS[id];
+  if(!a) return;
+  const inst=installed.has(id);
+  const ov=document.getElementById('appDetailOverlay');
+  const dc=document.getElementById('detailContent');
+
+  const scrHtml=a.scr.map((bg,i)=>`
+    <div class="screenshot" style="background:${bg};">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.8;">
+        <div class="app-icon-wrap ${a.grad}" style="width:56px;height:56px;border-radius:14px;">${a.icon}</div>
+        <div style="font-size:11px;color:rgba(255,255,255,.6);text-align:center;padding:0 8px;">${a.name}<br>Скриншот ${i+1}</div>
+      </div>
     </div>
   `).join('');
 
-  // Stars
-  const stars = '&#x2B50;'.repeat(Math.floor(parseFloat(app.rating)));
-
-  content.innerHTML = `
-    <div class="detail-hero">
-      <div class="detail-icon ${app.grad}">${app.icon}</div>
+  const stars='★'.repeat(Math.floor(parseFloat(a.rating)));
+  dc.innerHTML=`
+    <div class="detail-hero-row">
+      <div class="detail-big-icon ${a.grad}">${a.icon}</div>
       <div class="detail-meta">
-        <div class="detail-app-name">${app.name}</div>
-        <div class="detail-app-sub">${app.sub}</div>
-        <button class="install-btn ${isInst ? 'installed' : ''}" id="installBtn-${id}" onclick="startInstall('${id}', this)">
-          ${isInst ? 'Открыть' : 'Установить'}
+        <div class="detail-app-name">${a.name}</div>
+        <div class="detail-app-sub">${a.sub}</div>
+        <button class="install-btn ${inst?'installed':''}" id="installBtn-${id}" onclick="confirmInstall('${id}',this)">
+          ${inst?'Открыть':'Установить'}
         </button>
-        <div class="progress-wrap" id="progress-${id}" style="display:${isInst ? 'none':'none'};">
-          <div class="progress-bar" id="progressBar-${id}"></div>
-        </div>
+        <div class="prog-wrap" id="prog-${id}"><div class="prog-bar" id="progbar-${id}"></div></div>
       </div>
     </div>
-
     <div class="detail-stats">
-      <div class="stat-item">
-        <div class="stat-val">${app.rating}</div>
-        <div class="stat-key">Рейтинг</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-val">${app.category}</div>
-        <div class="stat-key">Категория</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-val">${app.size}</div>
-        <div class="stat-key">Размер</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-val">${app.age}</div>
-        <div class="stat-key">Возраст</div>
-      </div>
+      <div class="stat-item"><div class="stat-val">${a.rating}</div><div class="stat-key">Рейтинг</div></div>
+      <div class="stat-item"><div class="stat-val">${a.cat}</div><div class="stat-key">Категория</div></div>
+      <div class="stat-item"><div class="stat-val">${a.size}</div><div class="stat-key">Размер</div></div>
+      <div class="stat-item"><div class="stat-val">${a.age}</div><div class="stat-key">Возраст</div></div>
     </div>
-
-    <div style="padding:0 20px 16px;">
-      <div style="font-size:13px;color:var(--sub);">${stars} ${app.rating} · Версия ${app.version}</div>
-    </div>
-
+    <div style="padding:0 20px 14px;font-size:13px;color:var(--sub);">${stars} ${a.rating} &nbsp;·&nbsp; Версия ${a.ver}</div>
     <div style="padding:0 20px 10px;font-size:20px;font-weight:700;">Скриншоты</div>
-    <div class="screenshots">${screenshotsHtml}</div>
-
+    <div class="screenshots">${scrHtml}</div>
     <div class="detail-desc">
       <div class="detail-desc-title">Описание</div>
-      ${app.desc}
+      ${a.desc}
     </div>
-
-    <div style="margin:0 20px 20px;padding:14px 16px;background:rgba(44,44,46,0.5);border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
-      <div style="font-size:13px;color:var(--sub);margin-bottom:6px;">ИНФОРМАЦИЯ</div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:var(--sub);">Версия</span><span>${app.version}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:var(--sub);">Размер</span><span>${app.size}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-        <span style="color:var(--sub);">Возраст</span><span>${app.age}</span>
-      </div>
-      <div style="display:flex;justify-content:space-between;padding:8px 0;">
-        <span style="color:var(--sub);">Разработчик</span><span>AppStorePro+++</span>
-      </div>
+    <div class="info-table">
+      <div class="info-row"><span class="info-key">Версия</span><span class="info-val">${a.ver}</span></div>
+      <div class="info-row"><span class="info-key">Размер</span><span class="info-val">${a.size}</span></div>
+      <div class="info-row"><span class="info-key">Возрастной рейтинг</span><span class="info-val">${a.age}</span></div>
+      <div class="info-row"><span class="info-key">Категория</span><span class="info-val">${a.cat}</span></div>
+      <div class="info-row"><span class="info-key">Разработчик</span><span class="info-val">AppStorePro+++ Dev</span></div>
+      <div class="info-row"><span class="info-key">Обновлено</span><span class="info-val">Сегодня</span></div>
     </div>
-
-    <!-- REVIEWS -->
-    <div style="padding:0 20px 10px;font-size:20px;font-weight:700;">Отзывы</div>
-    <div style="padding:0 20px 20px;">
-      ${generateReviews(app.name)}
+    <div class="reviews-section">
+      <div class="review-title">Отзывы и оценки</div>
+      ${genReviews(a.name)}
     </div>
+    <div style="height:30px;"></div>
   `;
-
-  overlay.style.display = 'flex';
-  requestAnimationFrame(() => overlay.classList.add('open'));
+  ov.style.display='flex';
+  requestAnimationFrame(()=>ov.classList.add('open'));
 }
 
-function generateReviews(appName) {
-  const reviews = [
-    {name:'Иван_Pro', stars:5, text:'Отличное приложение! Работает лучше оригинала. Рекомендую всем!'},
-    {name:'user_2024', stars:5, text:`${appName} просто огонь! Скачал — не пожалел ни разу`},
-    {name:'testuser_ru', stars:4, text:'Хорошо работает, иногда вылетает, но в целом супер'},
+function closeDetail(){
+  const ov=document.getElementById('appDetailOverlay');
+  ov.classList.remove('open');
+  setTimeout(()=>{ov.style.display='none';},430);
+}
+
+function genReviews(name){
+  const rv=[
+    {n:'user_pro_2024',s:5,t:`${name} — лучшее что я ставил. Работает отлично, без вылетов!`},
+    {n:'iphonefan_ru',s:5,t:'Приложение просто огонь. Давно искал такой функционал. Спасибо разработчикам!'},
+    {n:'testuser99',s:4,t:'Очень хорошо работает, иногда небольшие лаги, но в целом 10 из 10'},
   ];
-  return reviews.map(r => `
-    <div style="padding:14px;background:rgba(44,44,46,0.4);border-radius:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-        <span style="font-size:14px;font-weight:600;">${r.name}</span>
-        <span style="color:rgba(255,210,0,0.9);font-size:13px;">${'★'.repeat(r.stars)}</span>
-      </div>
-      <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.4;">${r.text}</div>
+  return rv.map(r=>`
+    <div class="review-card">
+      <div class="review-top"><span class="review-author">${r.n}</span><span class="review-stars">${'★'.repeat(r.s)}</span></div>
+      <div class="review-text">${r.t}</div>
     </div>
   `).join('');
 }
 
-function closeAppDetail() {
-  const overlay = document.getElementById('appDetailOverlay');
-  overlay.classList.remove('open');
-  setTimeout(() => { overlay.style.display = 'none'; }, 400);
-}
-
-// ============================================================
-// INSTALL
-// ============================================================
-function startInstall(id, btn) {
-  if (installed.has(id)) {
-    openInstalledApp(id);
+// ====================================================
+// CONFIRM INSTALL
+// ====================================================
+function confirmInstall(id, btn){
+  if(installed.has(id)){
+    showNotif(APPS[id].name,'Приложение уже установлено','check');
     return;
   }
-
-  const app = APPS[id];
-  btn.classList.add('installing');
-  btn.textContent = 'Загрузка...';
-  btn.disabled = true;
-
-  const pw = document.getElementById('progress-' + id);
-  const pb = document.getElementById('progressBar-' + id);
-  if (pw && pb) {
-    pw.style.display = 'block';
-    let prog = 0;
-    const interval = setInterval(() => {
-      prog += Math.random() * 8 + 3;
-      if (prog >= 100) {
-        prog = 100;
-        clearInterval(interval);
-        finishInstall(id, btn, pw);
-      }
-      pb.style.width = prog + '%';
-    }, 120);
-  } else {
-    setTimeout(() => finishInstall(id, btn, null), 3000);
-  }
-
-  playInstallSound();
+  currentInstallId=id;
+  const a=APPS[id];
+  const ci=document.getElementById('confirmIcon');
+  ci.className=`confirm-icon ${a.grad}`;
+  ci.innerHTML=a.icon;
+  document.getElementById('confirmTitle').textContent=`Установить "${a.name}"?`;
+  document.getElementById('confirmText').textContent=`Будет загружен профиль конфигурации (${a.size}). Приложение появится на главном экране вашего устройства.`;
+  const m=document.getElementById('confirmModal');
+  m.classList.add('open');
 }
 
-function finishInstall(id, btn, progressWrap) {
-  installed.add(id);
-  const app = APPS[id];
-  btn.classList.remove('installing');
-  btn.classList.add('installed');
-  btn.textContent = 'Открыть';
-  btn.disabled = false;
-  if (progressWrap) progressWrap.style.display = 'none';
-
-  // Add to home screen
-  addToHomeScreen(id);
-
-  // Show notification
-  showNotification(app.name, 'Приложение установлено!', app.icon);
-
-  // Update all list buttons
-  document.querySelectorAll(`[id^="dlbtn-${id}"]`).forEach(b => {
-    b.textContent = 'Открыть';
-  });
-
-  // Rebuild lists
-  setTimeout(rebuildAllLists, 300);
+function closeConfirm(){
+  document.getElementById('confirmModal').classList.remove('open');
 }
 
-function installAppBtn(id, btn) {
-  if (installed.has(id)) {
-    openInstalledApp(id);
-    return;
-  }
-  btn.textContent = '...';
-  btn.disabled = true;
+function proceedInstall(){
+  closeConfirm();
+  if(!currentInstallId) return;
+  const id=currentInstallId;
+  const a=APPS[id];
+
+  // Show profile download modal
+  const pm=document.getElementById('profileModal');
+  const pl=document.getElementById('profileLogo');
+  pl.className=`profile-logo ${a.grad}`;
+  pl.innerHTML=a.icon;
+  document.getElementById('profileModalTitle').textContent=a.name;
+  document.getElementById('profileProgBar').style.width='0%';
+  document.getElementById('profileDlPct').textContent='0%';
+  document.getElementById('profileDlStatus').textContent='Подготовка профиля...';
+  document.getElementById('profileInstallBtn').disabled=true;
+  pm.classList.add('open');
+
+  // Play sound
   playInstallSound();
 
-  let prog = 0;
-  const interval = setInterval(() => {
-    prog += 12;
-    if (prog >= 100) {
-      clearInterval(interval);
+  // Start progress
+  let prog=0;
+  const stages=['Загрузка профиля...','Проверка сертификата...','Установка компонентов...','Финальная настройка...','Готово!'];
+  let stageIdx=0;
+  clearInterval(profileDlInterval);
+  profileDlInterval=setInterval(()=>{
+    prog+=Math.random()*5+2;
+    if(prog>100) prog=100;
+    document.getElementById('profileProgBar').style.width=prog+'%';
+    document.getElementById('profileDlPct').textContent=Math.floor(prog)+'%';
+    const si=Math.floor(prog/25);
+    if(si!==stageIdx && si<stages.length){stageIdx=si;document.getElementById('profileDlStatus').textContent=stages[si];}
+    if(prog>=100){
+      clearInterval(profileDlInterval);
+      document.getElementById('profileDlStatus').textContent='Профиль установлен!';
+      document.getElementById('profileInstallBtn').disabled=false;
       installed.add(id);
-      addToHomeScreen(id);
-      btn.textContent = 'Открыть';
-      btn.disabled = false;
-      showNotification(APPS[id].name, 'Установлено!', APPS[id].icon);
-      rebuildAllLists();
+      rebuildAll();
+      // Update detail button if open
+      const ib=document.getElementById('installBtn-'+id);
+      if(ib){ib.textContent='Открыть';ib.classList.add('installed');}
     }
-  }, 200);
+  },120);
 }
 
-function addToHomeScreen(id) {
-  if (!homeApps.includes(id)) {
-    homeApps.push(id);
-    rebuildHomeGrid();
+function cancelProfileDl(){
+  clearInterval(profileDlInterval);
+  document.getElementById('profileModal').classList.remove('open');
+  currentInstallId=null;
+}
+
+function openInstalledProfile(){
+  const id=currentInstallId;
+  document.getElementById('profileModal').classList.remove('open');
+  if(id && APPS[id]){
+    showNotif(APPS[id].name,'Профиль установлен! Приложение добавлено на главный экран.','check');
   }
+  currentInstallId=null;
 }
 
-function rebuildHomeGrid() {
-  const grid = document.getElementById('homeGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  homeApps.forEach(id => {
-    const app = APPS[id];
-    if (!app) return;
-    const el = document.createElement('div');
-    el.className = 'home-app';
-    el.innerHTML = `
-      <div class="home-app-icon ${app.grad}" onclick="launchApp('${id}')">${app.icon}</div>
-      <div class="home-app-name">${app.name.substring(0,14)}</div>
-    `;
-    grid.appendChild(el);
-  });
-}
-
-function rebuildAllLists() {
-  buildAppList('mainAppList', ['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat']);
-  buildAppList('gamesAppList', ['roblox','standoff','minecraft','games','tiktokmod','jailbreak']);
-  buildAppList('appsTabList', ['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','maps','bank','xiaomi','shazam','applemusic']);
-  buildAppList('searchRecommend', ['gemini','chatgpt','claude','telegram','roblox','youtube'], true);
-}
-
-function openInstalledApp(id) {
-  openHomeScreen();
-}
-
-// ============================================================
-// INSTALL SOUND
-// ============================================================
-function playInstallSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const notes = [523, 659, 784, 1046];
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.frequency.value = freq;
-      osc.type = 'sine';
-      gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.08);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.15);
-      osc.start(ctx.currentTime + i * 0.08);
-      osc.stop(ctx.currentTime + i * 0.08 + 0.15);
+// ====================================================
+// SOUND
+// ====================================================
+function playInstallSound(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [[523,.0],[659,.1],[784,.2],[1046,.32]].forEach(([f,t])=>{
+      const o=ctx.createOscillator();
+      const g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);
+      o.frequency.value=f;o.type='sine';
+      g.gain.setValueAtTime(.18,ctx.currentTime+t);
+      g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+.18);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+.18);
     });
-  } catch(e) {}
+  }catch(e){}
+}
+function playClick(){
+  try{
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator();const g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    o.frequency.value=440;o.type='sine';
+    g.gain.setValueAtTime(.08,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.08);
+    o.start(ctx.currentTime);o.stop(ctx.currentTime+.08);
+  }catch(e){}
 }
 
-function playClickSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.frequency.value = 440;
-    osc.type = 'sine';
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
-    osc.start(ctx.currentTime);
-    osc.stop(ctx.currentTime + 0.1);
-  } catch(e) {}
-}
-
-// ============================================================
+// ====================================================
 // NOTIFICATION
-// ============================================================
-let notifTimer;
-function showNotification(title, sub, icon) {
-  const n = document.getElementById('notification');
-  document.getElementById('notifTitle').textContent = title;
-  document.getElementById('notifSub').textContent = sub;
-  document.getElementById('notifIcon').innerHTML = icon || '&#x2705;';
-  n.classList.add('show');
+// ====================================================
+const NOTIF_ICONS={
+  check:`<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M5 12l5 5L19 7"/></svg>`,
+  star:`<svg viewBox="0 0 24 24" fill="white" stroke="none"><path d="M12 2l3 7h7l-5.5 4.5 2 7L12 17l-6.5 3.5 2-7L2 9h7L12 2z"/></svg>`,
+  ruble:`<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M9 10h4a2.5 2.5 0 0 1 0 5H9"/></svg>`,
+};
+const NOTIF_COLORS={check:'#30d158',star:'#ffd60a',ruble:'#0a84ff'};
+
+function showNotif(title,sub,type){
+  const el=document.getElementById('notif');
+  const iw=document.getElementById('notifIconWrap');
+  iw.style.background=NOTIF_COLORS[type]||'#0a84ff';
+  iw.innerHTML=NOTIF_ICONS[type]||NOTIF_ICONS.check;
+  document.getElementById('notifTitle').textContent=title;
+  document.getElementById('notifSub').textContent=sub;
+  el.classList.add('show');
   clearTimeout(notifTimer);
-  notifTimer = setTimeout(() => n.classList.remove('show'), 3000);
+  notifTimer=setTimeout(()=>el.classList.remove('show'),3200);
 }
 
-// ============================================================
+// ====================================================
 // ACCOUNT
-// ============================================================
-function openAccount() {
-  const modal = document.getElementById('accountModal');
-  const sheet = document.getElementById('accountSheet');
-  modal.classList.add('open');
-  requestAnimationFrame(() => sheet.classList.add('open'));
+// ====================================================
+function openAccount(){
+  const m=document.getElementById('accountModal');
+  const s=document.getElementById('accountSheet');
+  m.classList.add('open');
+  requestAnimationFrame(()=>s.classList.add('open'));
 }
-
-function closeAccount() {
-  const modal = document.getElementById('accountModal');
-  const sheet = document.getElementById('accountSheet');
-  sheet.classList.remove('open');
-  setTimeout(() => modal.classList.remove('open'), 400);
+function closeAccount(){
+  const s=document.getElementById('accountSheet');
+  s.classList.remove('open');
+  setTimeout(()=>document.getElementById('accountModal').classList.remove('open'),420);
 }
-
-function closeAccountIfOutside(e) {
-  if (e.target === document.getElementById('accountModal')) closeAccount();
-}
-
-function signOut() {
+function outsideClose(e){if(e.target===document.getElementById('accountModal')) closeAccount();}
+function signOut(){
   closeAccount();
-  setTimeout(() => {
-    document.getElementById('mainApp').classList.remove('active');
+  setTimeout(()=>{
+    document.getElementById('mainApp').style.display='none';
     installed.clear();
-    homeApps.length = 0;
-    document.getElementById('loginEmail').value = '';
-    document.getElementById('loginPass').value = '';
+    document.getElementById('loginEmail').value='';
+    document.getElementById('loginPass').value='';
     showScreen('loginScreen');
-  }, 300);
+  },350);
+}
+function showPurchaseHistory(){
+  showNotif('История покупок',`Установлено приложений: ${installed.size}`,'star');
 }
 
-function showPurchaseHistory() {
-  showNotification('История покупок', installed.size + ' приложений установлено', '&#x1F4CB;');
-}
-
-// ============================================================
-// REGION
-// ============================================================
-const regions = ['Россия','США','Великобритания','Германия','Япония','Китай','Казахстан','Беларусь','Украина','Франция','Турция','ОАЭ'];
-let selectedRegion = 'Россия';
-
-function buildRegionGrid() {
-  const grid = document.getElementById('regionGrid');
-  if (!grid) return;
-  grid.innerHTML = '';
-  regions.forEach(r => {
-    const chip = document.createElement('div');
-    chip.className = 'region-chip' + (r === selectedRegion ? ' selected' : '');
-    chip.textContent = r;
-    chip.onclick = () => {
-      selectedRegion = r;
-      buildRegionGrid();
-      showNotification('Регион изменён', r, '&#x1F30D;');
-      playClickSound();
-    };
-    grid.appendChild(chip);
+// ====================================================
+// REGIONS
+// ====================================================
+function buildRegions(){
+  const g=document.getElementById('regionGrid');
+  if(!g) return;
+  g.innerHTML='';
+  REGIONS.forEach(r=>{
+    const c=document.createElement('div');
+    c.className='region-chip'+(r===currentRegion?' sel':'');
+    c.textContent=r;
+    c.onclick=()=>{currentRegion=r;buildRegions();playClick();showNotif('Регион изменён',r,'check');};
+    g.appendChild(c);
   });
 }
 
-// ============================================================
-// HOME SCREEN
-// ============================================================
-function openHomeScreen() {
-  rebuildHomeGrid();
-  document.getElementById('homeScreenOverlay').classList.add('open');
-}
-
-function closeHomeScreen() {
-  document.getElementById('homeScreenOverlay').classList.remove('open');
-}
-
-function launchApp(id) {
-  const app = APPS[id];
-  if (!app) return;
-  playClickSound();
-  showNotification(app.name, 'Приложение запущено!', app.icon);
-}
-
-function launchDockApp(type) {
-  const names = {messages:'Сообщения', phone:'Телефон', safari:'Safari', music:'Музыка'};
-  showNotification(names[type] || type, 'Открыто', '&#x1F4F1;');
-}
-
-// ============================================================
+// ====================================================
 // SEARCH
-// ============================================================
-function doSearch(query) {
-  const resultsEl = document.getElementById('searchResults');
-  const defaultEl = document.getElementById('searchDefault');
-
-  if (!query) {
-    resultsEl.classList.remove('active');
-    defaultEl.style.display = 'block';
-    return;
-  }
-
-  defaultEl.style.display = 'none';
-  resultsEl.classList.add('active');
-
-  const q = query.toLowerCase();
-  const matches = appIds.filter(id => {
-    const app = APPS[id];
-    return app.name.toLowerCase().includes(q) || app.sub.toLowerCase().includes(q) || app.category.toLowerCase().includes(q);
-  });
-
-  if (matches.length === 0) {
-    resultsEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--sub);">Ничего не найдено по запросу "${query}"</div>`;
-    return;
-  }
-
-  resultsEl.innerHTML = `<div class="section-header"><span class="section-title">Результаты (${matches.length})</span></div><div class="app-list" id="searchResultsList"></div>`;
-  buildAppList('searchResultsList', matches);
+// ====================================================
+function doSearch(q){
+  const sr=document.getElementById('searchResults');
+  const sd=document.getElementById('searchDefault');
+  if(!q){sr.style.display='none';sd.style.display='block';return;}
+  sd.style.display='none';sr.style.display='block';
+  const ql=q.toLowerCase();
+  const m=ALL_IDS.filter(id=>{const a=APPS[id];return a.name.toLowerCase().includes(ql)||a.sub.toLowerCase().includes(ql)||a.cat.toLowerCase().includes(ql);});
+  if(!m.length){sr.innerHTML=`<div style="padding:40px 20px;text-align:center;color:var(--sub);">По запросу «${q}» ничего не найдено</div>`;return;}
+  sr.innerHTML=`<div class="section-header"><span class="section-title">Результаты (${m.length})</span></div><div class="app-list" id="srList"></div>`;
+  buildList('srList',m);
+}
+function filterSearch(kw){
+  document.getElementById('searchInput').value=kw;
+  doSearch(kw);
 }
 
-function showTopApps() {
-  document.getElementById('searchInput').value = '';
-  buildAppList('searchResultsList', appIds.slice(0, 10));
-  document.getElementById('searchResults').classList.add('active');
-  document.getElementById('searchResults').innerHTML = `<div class="section-header"><span class="section-title">Топ загрузок</span></div><div class="app-list" id="searchResultsList"></div>`;
-  buildAppList('searchResultsList', appIds.slice(0, 15));
-  document.getElementById('searchDefault').style.display = 'none';
-}
-
-// ============================================================
-// FIRST TIME SCREEN SHOW
-// ============================================================
-document.getElementById('loginScreen').style.display = 'flex';
-document.getElementById('loginScreen').style.opacity = '1';
-document.getElementById('loginScreen').style.transform = 'translateY(0)';
+// ====================================================
+// INIT ON LOAD
+// ====================================================
+window.addEventListener('load',()=>{
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginScreen').style.opacity='1';
+  document.getElementById('loginScreen').style.transform='translateY(0)';
+});
 </script>
 </body>
 </html>
