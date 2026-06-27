@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AppStorePro+++</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --bg: #000;
+    --card: rgba(28,28,30,0.85);
+    --card2: rgba(44,44,46,0.7);
+    --blue: #0a84ff;
+    --text: #fff;
+    --sub: #8e8e93;
+    --border: rgba(255,255,255,0.08);
+    --glass: rgba(255,255,255,0.08);
+    --glass-border: rgba(255,255,255,0.18);
+    --radius: 18px;
+    --tab-h: 82px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    max-width: 430px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* LIQUID GLASS */
+  .glass {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(24px) saturate(1.8);
+    -webkit-backdrop-filter: blur(24px) saturate(1.8);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius);
+  }
+
+  .glass-dark {
+    background: rgba(20,20,22,0.75);
+    backdrop-filter: blur(30px) saturate(2);
+    -webkit-backdrop-filter: blur(30px) saturate(2);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: var(--radius);
+  }
+
+  /* SCREENS */
+  .screen {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    transition: opacity 0.35s cubic-bezier(.4,0,.2,1), transform 0.35s cubic-bezier(.4,0,.2,1);
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .screen.active {
+    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* LOGIN SCREEN */
+  #loginScreen {
+    background: linear-gradient(160deg, #0a0a1a 0%, #0d1b2a 40%, #0a0a0a 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    gap: 0;
+  }
+
+  .login-logo {
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
+    border-radius: 22px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 22px;
+    box-shadow: 0 8px 32px rgba(10,132,255,0.4), 0 0 0 1px rgba(255,255,255,0.15);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 8px 32px rgba(10,132,255,0.4), 0 0 0 1px rgba(255,255,255,0.15); }
+    50% { box-shadow: 0 12px 48px rgba(94,92,230,0.6), 0 0 0 1px rgba(255,255,255,0.25); }
+  }
+
+  .login-logo svg { width: 52px; height: 52px; }
+
+  .login-title {
+    font-size: 28px; font-weight: 800;
+    background: linear-gradient(90deg, #fff, #aaa);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 6px; text-align: center;
+  }
+  .login-sub {
+    font-size: 15px; color: var(--sub);
+    margin-bottom: 36px; text-align: center;
+  }
+
+  .login-form {
+    width: 100%;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .login-field {
+    display: flex; align-items: center;
+    padding: 0 16px;
+    height: 52px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .login-field:last-child { border-bottom: none; }
+  .login-field input {
+    background: none; border: none; outline: none;
+    color: #fff; font-size: 17px; width: 100%;
+    caret-color: var(--blue);
+  }
+  .login-field input::placeholder { color: var(--sub); }
+  .login-field label {
+    font-size: 17px; color: #fff; width: 100px; flex-shrink: 0;
+  }
+
+  .btn-primary {
+    width: 100%; height: 52px;
+    background: var(--blue);
+    border: none; border-radius: 14px;
+    color: #fff; font-size: 17px; font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-primary:active { transform: scale(0.97); opacity: 0.85; }
+
+  .login-hint { font-size: 13px; color: var(--sub); text-align: center; }
+
+  /* CONGRATS SCREEN */
+  #congratsScreen {
+    background: linear-gradient(160deg, #0a0a1a 0%, #0d1b2a 40%, #0a0a0a 100%);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    text-align: center;
+  }
+
+  .congrats-icon {
+    width: 110px; height: 110px;
+    background: linear-gradient(135deg, #0a84ff, #5e5ce6, #bf5af2);
+    border-radius: 26px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 28px;
+    box-shadow: 0 16px 48px rgba(10,132,255,0.5);
+    animation: bounceIn 0.6s cubic-bezier(.36,.07,.19,.97);
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    70% { transform: scale(0.95); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .congrats-icon svg { width: 64px; height: 64px; }
+
+  .congrats-title {
+    font-size: 26px; font-weight: 800; margin-bottom: 12px;
+    background: linear-gradient(90deg, #fff 0%, #aaa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .congrats-text {
+    font-size: 16px; color: var(--sub); line-height: 1.5; margin-bottom: 40px;
+  }
+  .congrats-text span { color: #0a84ff; font-weight: 600; }
+
+  /* STATUS BAR */
+  .status-bar {
+    height: 44px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 20px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .status-time { font-size: 15px; font-weight: 600; }
+  .status-icons { display: flex; align-items: center; gap: 6px; }
+  .status-icons svg { width: 16px; height: 12px; }
+
+  /* TAB BAR */
+  .tab-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: var(--tab-h);
+    background: rgba(20,20,22,0.78);
+    backdrop-filter: blur(30px) saturate(2.5);
+    -webkit-backdrop-filter: blur(30px) saturate(2.5);
+    border-top: 1px solid rgba(255,255,255,0.10);
+    display: flex; align-items: flex-start;
+    padding-top: 10px;
+    z-index: 100;
+  }
+
+  .tab-btn {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    cursor: pointer; padding: 4px 0;
+    transition: all 0.25s;
+    background: none; border: none; color: var(--sub);
+  }
+  .tab-btn.active { color: var(--blue); }
+  .tab-btn svg { width: 24px; height: 24px; }
+  .tab-btn span { font-size: 10px; font-weight: 500; }
+
+  /* SCROLL CONTENT */
+  .scroll-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: calc(var(--tab-h) + 10px);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .scroll-content::-webkit-scrollbar { display: none; }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 8px 20px 4px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .page-title { font-size: 34px; font-weight: 800; }
+  .avatar-btn {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #636366, #48484a);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff;
+    cursor: pointer; border: none;
+    transition: transform 0.2s;
+  }
+  .avatar-btn:active { transform: scale(0.92); }
+
+  /* HERO CARD */
+  .hero-card {
+    margin: 8px 16px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.25s;
+  }
+  .hero-card:active { transform: scale(0.98); }
+  .hero-img {
+    width: 100%; height: 340px;
+    object-fit: cover;
+    display: block;
+  }
+  .hero-img-placeholder {
+    width: 100%; height: 340px;
+    background: linear-gradient(135deg, #1c1c3e 0%, #2d1b69 40%, #6b21a8 70%, #4c1d95 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-img-placeholder::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 70% 30%, rgba(139,92,246,0.6), transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(59,130,246,0.4), transparent 50%);
+  }
+  .hero-overlay {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 24px 20px 20px;
+    background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 100%);
+  }
+  .hero-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.7); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .hero-title { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .hero-sub { font-size: 15px; color: rgba(255,255,255,0.7); }
+
+  /* SECTION HEADER */
+  .section-header {
+    padding: 20px 20px 10px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .section-title { font-size: 22px; font-weight: 700; }
+  .section-more { font-size: 17px; color: var(--blue); cursor: pointer; }
+
+  /* APP LIST */
+  .app-list { padding: 0 20px; }
+  .app-row {
+    display: flex; align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .app-row:active { opacity: 0.6; }
+  .app-row:last-child { border-bottom: none; }
+  .app-icon {
+    width: 62px; height: 62px;
+    border-radius: 14px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    overflow: hidden;
+    background: #1c1c1e;
+  }
+  .app-icon img { width: 100%; height: 100%; object-fit: cover; border-radius: 14px; }
+  .app-info { flex: 1; padding: 0 12px; }
+  .app-name { font-size: 17px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-desc { font-size: 13px; color: var(--sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .app-desc-small { font-size: 11px; color: var(--sub); margin-top: 2px; }
+  .dl-btn {
+    background: rgba(255,255,255,0.12);
+    border: none; border-radius: 20px;
+    color: var(--blue); font-size: 15px; font-weight: 600;
+    padding: 6px 18px; cursor: pointer;
+    transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+  }
+  .dl-btn:active { transform: scale(0.92); }
+
+  /* HORIZONTAL SCROLL */
+  .h-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 14px;
+    padding: 0 20px 10px;
+    scrollbar-width: none;
+  }
+  .h-scroll::-webkit-scrollbar { display: none; }
+
+  /* APP CARD small */
+  .app-card-sm {
+    flex-shrink: 0; width: 100px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .app-card-sm:active { transform: scale(0.93); }
+  .app-card-sm .app-icon { width: 72px; height: 72px; }
+  .app-card-sm .app-name { font-size: 12px; text-align: center; white-space: normal; line-height: 1.3; }
+
+  /* CHIPS */
+  .chips {
+    display: flex; gap: 8px;
+    padding: 10px 20px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip {
+    background: var(--card2);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 14px; font-weight: 500;
+    white-space: nowrap; cursor: pointer;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .chip:active { transform: scale(0.95); }
+
+  /* FEATURED BANNER */
+  .feature-banner {
+    margin: 4px 16px;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.25s;
+  }
+  .feature-banner:active { transform: scale(0.98); }
+  .banner-inner {
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(28,28,60,0.9), rgba(60,28,90,0.9));
+    backdrop-filter: blur(10px);
+  }
+  .banner-label { font-size: 11px; font-weight: 700; color: var(--blue); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; }
+  .banner-title { font-size: 20px; font-weight: 700; margin-bottom: 2px; }
+  .banner-sub { font-size: 14px; color: var(--sub); margin-bottom: 12px; }
+
+  /* ARCADE SCREEN */
+  .arcade-hero {
+    height: 300px;
+    background: linear-gradient(180deg, #3d0c02 0%, #1a0800 50%, #000 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .arcade-grid {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 120px;
+    background: repeating-linear-gradient(90deg, rgba(0,80,255,0.15) 0, rgba(0,80,255,0.15) 1px, transparent 1px, transparent 40px),
+                repeating-linear-gradient(0deg, rgba(0,80,255,0.15) 0, rgba(0,80,255,0.15) 1px, transparent 1px, transparent 40px);
+    background-size: 40px 40px;
+    perspective: 300px;
+    transform: rotateX(40deg);
+    transform-origin: bottom;
+  }
+  .arcade-title-section {
+    text-align: center; padding: 30px 20px;
+  }
+  .arcade-logo { font-size: 18px; font-weight: 700; margin-bottom: 12px; color: #fff; }
+  .arcade-logo-icon { font-size: 22px; }
+  .arcade-headline { font-size: 26px; font-weight: 800; margin-bottom: 20px; line-height: 1.2; }
+  .arcade-offer-btn {
+    width: 100%; height: 52px;
+    background: var(--blue); border: none;
+    border-radius: 14px; color: #fff;
+    font-size: 18px; font-weight: 600;
+    cursor: pointer; margin-bottom: 10px;
+    transition: all 0.2s;
+  }
+  .arcade-offer-btn:active { transform: scale(0.97); }
+  .arcade-hint { font-size: 13px; color: var(--sub); }
+
+  /* SEARCH SCREEN */
+  .search-bar {
+    margin: 8px 16px 4px;
+    background: rgba(118,118,128,0.22);
+    border-radius: 12px;
+    display: flex; align-items: center;
+    padding: 8px 14px; gap: 8px;
+  }
+  .search-bar input {
+    flex: 1; background: none; border: none; outline: none;
+    color: #fff; font-size: 17px;
+    caret-color: var(--blue);
+  }
+  .search-bar input::placeholder { color: var(--sub); }
+  .search-bar svg { color: var(--sub); flex-shrink: 0; }
+
+  /* ACCOUNT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-end;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .account-sheet {
+    width: 100%; max-height: 92vh;
+    background: rgba(18,18,20,0.95);
+    backdrop-filter: blur(30px);
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    padding-bottom: 40px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .account-sheet.open { transform: translateY(0); }
+  .account-sheet::-webkit-scrollbar { display: none; }
+
+  .sheet-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 20px 16px;
+  }
+  .sheet-title-row { display: flex; align-items: center; gap: 12px; }
+  .sheet-title { font-size: 18px; font-weight: 600; }
+  .close-btn {
+    width: 34px; height: 34px;
+    background: rgba(118,118,128,0.3);
+    border-radius: 50%; border: none;
+    color: #fff; font-size: 16px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .close-btn:active { transform: scale(0.9); }
+
+  .account-card {
+    margin: 0 16px 16px;
+    background: rgba(44,44,46,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .account-row {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .account-row:active { opacity: 0.6; }
+  .account-row:last-child { border-bottom: none; }
+  .account-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 700;
+  }
+  .account-info { flex: 1; }
+  .account-name { font-size: 17px; font-weight: 500; }
+  .account-sub { font-size: 13px; color: var(--sub); margin-top: 2px; }
+  .chevron { color: var(--sub); font-size: 14px; }
+
+  .menu-card {
+    margin: 0 16px 16px;
+    background: rgba(44,44,46,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .menu-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .menu-row:active { opacity: 0.6; }
+  .menu-row:last-child { border-bottom: none; }
+  .menu-label { font-size: 17px; }
+
+  /* REGION SELECTOR */
+  .region-card {
+    margin: 0 16px 16px;
+    background: rgba(44,44,46,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 14px 16px;
+  }
+  .region-label { font-size: 13px; color: var(--sub); margin-bottom: 10px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; }
+  .region-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .region-chip {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 14px; cursor: pointer;
+    transition: all 0.25s;
+  }
+  .region-chip.selected {
+    background: var(--blue); border-color: var(--blue); color: #fff;
+  }
+  .region-chip:active { transform: scale(0.93); }
+
+  /* SHEET ACTIONS */
+  .sheet-actions {
+    display: flex; gap: 0;
+    margin: 0 16px;
+    background: rgba(44,44,46,0.7);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .sheet-action {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    padding: 14px 8px;
+    border-right: 1px solid rgba(255,255,255,0.07);
+    cursor: pointer; border: none; background: none;
+    color: var(--blue); font-size: 13px;
+    transition: opacity 0.15s;
+  }
+  .sheet-action:last-child { border-right: none; }
+  .sheet-action:active { opacity: 0.6; }
+  .sheet-action svg { width: 22px; height: 22px; }
+
+  /* APP DETAIL */
+  #appDetailOverlay {
+    position: fixed; inset: 0; z-index: 150;
+    display: none;
+    background: #000;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  #appDetailOverlay.open {
+    display: flex;
+    transform: translateY(0);
+  }
+
+  .detail-header {
+    padding: 16px 20px 0;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .detail-back {
+    background: none; border: none; color: var(--blue);
+    font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 0;
+  }
+  .detail-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .detail-scroll::-webkit-scrollbar { display: none; }
+
+  .detail-hero {
+    padding: 24px 20px 16px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .detail-icon {
+    width: 110px; height: 110px; border-radius: 24px;
+    flex-shrink: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 50px;
+    background: #1c1c1e;
+  }
+  .detail-meta { flex: 1; }
+  .detail-app-name { font-size: 22px; font-weight: 800; line-height: 1.2; margin-bottom: 4px; }
+  .detail-app-sub { font-size: 14px; color: var(--sub); margin-bottom: 12px; }
+  .install-btn {
+    background: var(--blue); border: none;
+    border-radius: 20px; color: #fff;
+    font-size: 16px; font-weight: 600;
+    padding: 8px 28px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .install-btn:active { transform: scale(0.93); }
+  .install-btn.installing { background: rgba(255,255,255,0.15); color: var(--sub); }
+  .install-btn.installed { background: rgba(10,132,255,0.2); color: var(--blue); }
+
+  .detail-stats {
+    display: flex; padding: 0 20px; gap: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .stat-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; padding: 12px 8px;
+    border-right: 1px solid var(--border);
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-val { font-size: 16px; font-weight: 700; }
+  .stat-key { font-size: 11px; color: var(--sub); margin-top: 2px; }
+
+  .screenshots {
+    padding: 0 20px 20px;
+    display: flex; gap: 10px; overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .screenshots::-webkit-scrollbar { display: none; }
+  .screenshot {
+    width: 160px; height: 280px; flex-shrink: 0;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #1c1c3e, #2d1b69);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+  }
+
+  .detail-desc {
+    padding: 0 20px 20px;
+    font-size: 15px; line-height: 1.6; color: rgba(255,255,255,0.85);
+  }
+  .detail-desc-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px; margin-top: 8px; overflow: hidden;
+  }
+  .progress-bar {
+    height: 100%; background: var(--blue);
+    border-radius: 2px; width: 0%;
+    transition: width 0.1s linear;
+  }
+
+  /* HOME SCREEN APPS */
+  #homeScreenOverlay {
+    position: fixed; inset: 0; z-index: 140;
+    display: none;
+    background: linear-gradient(160deg, #0a0018 0%, #0a1028 50%, #000 100%);
+    flex-direction: column;
+  }
+  #homeScreenOverlay.open { display: flex; }
+
+  .home-status { padding: 12px 24px 4px; display: flex; justify-content: space-between; }
+  .home-time { font-size: 42px; font-weight: 200; }
+  .home-date { font-size: 17px; color: rgba(255,255,255,0.7); margin-bottom: 16px; padding-left: 24px; }
+
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px 8px;
+    padding: 16px 16px;
+    flex: 1; overflow-y: auto;
+    align-content: start;
+  }
+  .home-grid::-webkit-scrollbar { display: none; }
+
+  .home-app {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+    cursor: pointer; transition: transform 0.2s;
+  }
+  .home-app:active { transform: scale(0.88); }
+  .home-app-icon {
+    width: 68px; height: 68px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px;
+    background: #1c1c1e;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .home-app-icon.installing-anim::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    animation: shimmer 1s infinite;
+  }
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .home-app-name { font-size: 11px; text-align: center; color: #fff; line-height: 1.2; }
+
+  .home-dock {
+    margin: 0 16px 20px;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(30px);
+    border-radius: 22px;
+    padding: 10px;
+    display: flex; justify-content: center; gap: 12px;
+    border: 1px solid rgba(255,255,255,0.15);
+  }
+  .dock-app {
+    width: 60px; height: 60px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px; cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .dock-app:active { transform: scale(0.88); }
+
+  .home-back-btn {
+    position: absolute; top: 60px; right: 20px;
+    background: rgba(255,255,255,0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 8px 16px;
+    color: #fff; font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* NOTIFICATION */
+  .notification {
+    position: fixed; top: 60px; left: 16px; right: 16px;
+    z-index: 300;
+    background: rgba(30,30,32,0.92);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    transform: translateY(-120px);
+    transition: transform 0.4s cubic-bezier(.36,.07,.19,.97);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .notification.show { transform: translateY(0); }
+  .notif-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; background: var(--blue); flex-shrink: 0;
+  }
+  .notif-text { flex: 1; }
+  .notif-title { font-size: 14px; font-weight: 600; }
+  .notif-sub { font-size: 13px; color: var(--sub); }
+
+  /* GAMES SCREEN (Arcade-like) */
+  .games-hero {
+    height: 200px;
+    background: linear-gradient(135deg, #0a0a1a, #1a0828);
+    display: flex; align-items: flex-end; padding: 20px;
+  }
+
+  /* SEPARATOR */
+  .sep { height: 1px; background: var(--border); margin: 0 20px; }
+
+  /* LOADING SPINNER */
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--blue);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* INSTALLED BADGE */
+  .installed-badge {
+    position: absolute; top: -4px; right: -4px;
+    width: 18px; height: 18px;
+    background: #30d158;
+    border-radius: 50%;
+    border: 2px solid #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; color: #fff; font-weight: 700;
+  }
+
+  /* MAIN APP WRAPPER */
+  #mainApp { display: none; flex-direction: column; height: 100vh; position: relative; }
+  #mainApp.active { display: flex; }
+
+  /* TAB PAGES */
+  .tab-page { display: none; flex: 1; overflow: hidden; flex-direction: column; }
+  .tab-page.active { display: flex; }
+
+  /* SEARCH RESULTS */
+  .search-results { display: none; }
+  .search-results.active { display: block; }
+
+  /* ANIMATIONS */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .animated { animation: fadeSlideUp 0.4s cubic-bezier(.4,0,.2,1) both; }
+
+  /* GRADIENT CARDS */
+  .grad-purple { background: linear-gradient(135deg, #2d1b69, #5e5ce6); }
+  .grad-blue { background: linear-gradient(135deg, #0a3069, #0a84ff); }
+  .grad-green { background: linear-gradient(135deg, #0a4012, #30d158); }
+  .grad-red { background: linear-gradient(135deg, #4a0a0a, #ff453a); }
+  .grad-orange { background: linear-gradient(135deg, #4a2a00, #ff9f0a); }
+  .grad-pink { background: linear-gradient(135deg, #4a0a2a, #ff375f); }
+  .grad-teal { background: linear-gradient(135deg, #0a3040, #40c8e0); }
+  .grad-indigo { background: linear-gradient(135deg, #1a0a4a, #7c3aed); }
+  .grad-yellow { background: linear-gradient(135deg, #3a2a00, #ffd60a); }
+  .grad-cyan { background: linear-gradient(135deg, #003040, #00c7be); }
+  .grad-brown { background: linear-gradient(135deg, #2a1a0a, #ac8e68); }
+  .grad-gray { background: linear-gradient(135deg, #1c1c1e, #48484a); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen" class="screen active" style="display:flex;">
+  <div class="login-logo">
+    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="52" height="52" rx="12" fill="none"/>
+      <path d="M26 8C26 8 14 14 14 26C14 32.627 18.373 38.2 24.4 39.8L26 44L27.6 39.8C33.627 38.2 38 32.627 38 26C38 14 26 8 26 8Z" fill="white"/>
+      <circle cx="26" cy="26" r="6" fill="rgba(10,132,255,0.7)"/>
+      <path d="M20 18L26 14L32 18" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20 34L26 38L32 34" stroke="rgba(255,255,255,0.6)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </div>
+  <div class="login-title">AppStorePro+++</div>
+  <div class="login-sub">Войдите через ApplePlus ID</div>
+
+  <div class="login-form">
+    <div class="login-field">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="Введите email" autocomplete="off">
+    </div>
+    <div class="login-field">
+      <label>Пароль</label>
+      <input type="password" id="loginPass" placeholder="Введите пароль" autocomplete="off">
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="doLogin()">Войти в ApplePlus ID</button>
+  <div class="login-hint">Введите любой email и пароль для входа</div>
+</div>
+
+<!-- CONGRATS SCREEN -->
+<div id="congratsScreen" class="screen" style="justify-content:center; align-items:center; padding:40px 28px; background:linear-gradient(160deg,#0a0a1a,#0d1b2a,#0a0a0a);">
+  <div class="congrats-icon">
+    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M32 8C32 8 18 15 18 32C18 41.941 24.059 50.4 32 52C39.941 50.4 46 41.941 46 32C46 15 32 8 32 8Z" fill="white"/>
+      <circle cx="32" cy="32" r="8" fill="rgba(10,132,255,0.8)"/>
+      <path d="M24 22L32 18L40 22M24 42L32 46L40 42" stroke="rgba(255,255,255,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+      <circle cx="20" cy="16" r="3" fill="rgba(255,215,0,0.8)"/>
+      <circle cx="44" cy="16" r="3" fill="rgba(255,100,100,0.8)"/>
+      <circle cx="12" cy="32" r="2" fill="rgba(100,255,100,0.8)"/>
+      <circle cx="52" cy="28" r="2" fill="rgba(100,200,255,0.8)"/>
+    </svg>
+  </div>
+  <div class="congrats-title">Добро пожаловать!</div>
+  <div class="congrats-text">
+    Вы успешно вошли в <span>AppStorePro+++</span><br>
+    Получите доступ к эксклюзивным приложениям, модам и расширенным версиям популярных сервисов.
+  </div>
+  <button class="btn-primary" onclick="gotoMain()">Продолжить</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+  <!-- STATUS BAR -->
+  <div class="status-bar" style="flex-shrink:0; background:#000;">
+    <span class="status-time" id="statusTime">16:00</span>
+    <div class="status-icons">
+      <svg viewBox="0 0 17 12" fill="white"><rect x="0" y="3" width="3" height="9" rx="1"/><rect x="4.5" y="2" width="3" height="10" rx="1"/><rect x="9" y="0" width="3" height="12" rx="1"/><rect x="13.5" y="0" width="3" height="12" rx="1" opacity="0.3"/></svg>
+      <svg viewBox="0 0 16 12" fill="white"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1C4.9 1 2.1 2.3 0 4.4L0.9 5.3C2.7 3.5 5.2 2.4 8 2.4Z"/><path d="M8 5.2C9.8 5.2 11.5 5.9 12.7 7.1L13.6 6.2C12.1 4.7 10.2 3.8 8 3.8C5.8 3.8 3.9 4.7 2.4 6.2L3.3 7.1C4.5 5.9 6.2 5.2 8 5.2Z"/><circle cx="8" cy="10" r="1.5"/></svg>
+      <svg viewBox="0 0 25 12" fill="white"><rect x="0" y="1" width="21" height="10" rx="3" stroke="white" stroke-width="1" fill="none"/><rect x="2" y="3" width="13" height="6" rx="1.5" fill="white"/><path d="M22 4.5V7.5C23.1 7 23.1 5 22 4.5Z"/></svg>
+    </div>
+  </div>
+
+  <!-- TAB PAGES -->
+  <div style="flex:1; overflow:hidden; display:flex; flex-direction:column; position:relative;">
+
+    <!-- TODAY TAB -->
+    <div class="tab-page active" id="tabToday">
+      <div class="scroll-content">
+        <div class="page-header animated">
+          <span class="page-title">Сегодня</span>
+          <button class="avatar-btn" onclick="openAccount()">АП</button>
+        </div>
+
+        <!-- HERO -->
+        <div class="hero-card animated" onclick="openAppDetail('gemini')">
+          <div class="hero-img-placeholder" style="background:linear-gradient(135deg, #0a0a2a 0%, #1a0a40 30%, #3d1a6e 60%, #6b21a8 80%, #4c1d95 100%);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+              <div style="font-size:80px;filter:drop-shadow(0 4px 12px rgba(139,92,246,0.7));">&#x1F4AB;</div>
+              <div style="font-size:22px;font-weight:800;color:#fff;">Gemini Plus</div>
+              <div style="display:flex;gap:8px;">
+                <div style="width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#3b82f6);opacity:0.8;"></div>
+                <div style="width:16px;height:16px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#8b5cf6);opacity:0.7;"></div>
+                <div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);opacity:0.9;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-label">Не пропустите</div>
+            <div class="hero-title">Новые ИИ-приложения</div>
+            <div class="hero-sub">Выбор редакторов AppStorePro+++</div>
+          </div>
+        </div>
+
+        <!-- SECTION: РЕКОМЕНДУЕМ -->
+        <div class="section-header animated">
+          <span class="section-title">Рекомендуем сегодня</span>
+          <span class="section-more">Ещё &rsaquo;</span>
+        </div>
+
+        <!-- HORIZONTAL APPS -->
+        <div class="h-scroll animated">
+          <div class="app-card-sm" onclick="openAppDetail('chatgpt')">
+            <div class="app-icon grad-green"><span style="font-size:32px;">&#x1F916;</span></div>
+            <div class="app-name">ChatGPT Pro</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('tiktok')">
+            <div class="app-icon" style="background:#000;"><span style="font-size:32px;">&#127925;</span></div>
+            <div class="app-name">TikTok Pro</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('telegram')">
+            <div class="app-icon grad-blue"><span style="font-size:32px;">&#x2708;&#xFE0F;</span></div>
+            <div class="app-name">Telegram++++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('youtube')">
+            <div class="app-icon grad-red"><span style="font-size:32px;">&#9654;</span></div>
+            <div class="app-name">YouTube Pro</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('claude')">
+            <div class="app-icon grad-orange"><span style="font-size:32px;">&#129302;</span></div>
+            <div class="app-name">Claude+++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('esign')">
+            <div class="app-icon grad-purple"><span style="font-size:32px;">&#x270D;</span></div>
+            <div class="app-name">ESign+++</div>
+          </div>
+        </div>
+
+        <!-- SECOND HERO -->
+        <div class="hero-card animated" onclick="openAppDetail('jailbreak')" style="margin-top:8px;">
+          <div class="hero-img-placeholder" style="background:linear-gradient(135deg,#0a1a0a,#0a3a0a,#1a5a1a);">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+              <div style="font-size:70px;">&#x1F513;</div>
+              <div style="font-size:20px;font-weight:800;color:#30d158;">Jailbreak +++</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.6);">iOS 26 - iOS 27 Developer Preview</div>
+            </div>
+          </div>
+          <div class="hero-overlay">
+            <div class="hero-label">Эксклюзив</div>
+            <div class="hero-title">Jailbreak для iOS 26-27</div>
+            <div class="hero-sub">Developer Preview Edition</div>
+          </div>
+        </div>
+
+        <!-- APPS LIST -->
+        <div class="section-header animated">
+          <span class="section-title">Топ AppStorePro+++</span>
+          <span class="section-more">Ещё &rsaquo;</span>
+        </div>
+        <div class="app-list animated" id="mainAppList"></div>
+
+        <div style="height:20px;"></div>
+      </div>
+    </div>
+
+    <!-- GAMES TAB -->
+    <div class="tab-page" id="tabGames">
+      <div class="scroll-content">
+        <div class="page-header animated">
+          <span class="page-title">Игры</span>
+          <button class="avatar-btn" onclick="openAccount()">АП</button>
+        </div>
+
+        <!-- FEATURE BANNER -->
+        <div class="feature-banner animated" onclick="openAppDetail('roblox')">
+          <div style="width:100%;height:220px;background:linear-gradient(135deg,#1a0a3a,#3d1a6e,#2563eb);border-radius:20px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(139,92,246,0.5),transparent 60%);"></div>
+            <div style="text-align:center;z-index:1;">
+              <div style="font-size:60px;margin-bottom:8px;">&#x1F3AE;</div>
+              <div style="font-size:22px;font-weight:800;">Roblox+++</div>
+              <div style="font-size:14px;color:rgba(255,255,255,0.7);">Миллионы игр без ограничений</div>
+            </div>
+            <div class="detail-app-name" style="position:absolute;bottom:16px;right:16px;">
+              <button class="dl-btn" onclick="event.stopPropagation();installAppBtn('roblox',this)">Загрузить</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header animated">
+          <span class="section-title">Лучшие игры &rsaquo;</span>
+        </div>
+        <div class="app-list animated" id="gamesAppList"></div>
+
+        <div class="section-header animated">
+          <span class="section-title">Эксклюзивы Pro &rsaquo;</span>
+        </div>
+        <div class="h-scroll animated">
+          <div class="app-card-sm" onclick="openAppDetail('standoff')">
+            <div class="app-icon grad-red"><span style="font-size:32px;">&#x1F52B;</span></div>
+            <div class="app-name">Standoff 2 Plus</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('minecraft')">
+            <div class="app-icon grad-green"><span style="font-size:32px;">&#x26CF;</span></div>
+            <div class="app-name">Minecraft+</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('games')">
+            <div class="app-icon grad-purple"><span style="font-size:32px;">&#x1F579;</span></div>
+            <div class="app-name">Games++++++++++++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('jailbreak')">
+            <div class="app-icon grad-green"><span style="font-size:32px;">&#x1F513;</span></div>
+            <div class="app-name">Jailbreak+++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('tiktokmod')">
+            <div class="app-icon" style="background:linear-gradient(135deg,#1a1a1a,#333);"><span style="font-size:32px;">&#127925;</span></div>
+            <div class="app-name">TikTok MOD</div>
+          </div>
+        </div>
+
+        <div style="height:20px;"></div>
+      </div>
+    </div>
+
+    <!-- APPS TAB -->
+    <div class="tab-page" id="tabApps">
+      <div class="scroll-content">
+        <div class="page-header animated">
+          <span class="page-title">Приложения</span>
+          <button class="avatar-btn" onclick="openAccount()">АП</button>
+        </div>
+
+        <!-- CHIPS -->
+        <div class="chips animated">
+          <div class="chip">&#x231A; Для Apple Watch</div>
+          <div class="chip">&#x1F4BC; Бизнес</div>
+          <div class="chip">&#x1F3AE; Игры</div>
+          <div class="chip">&#x1F4F1; Социальные</div>
+          <div class="chip">&#x1F3B5; Музыка</div>
+          <div class="chip">&#x1F4F7; Фото</div>
+        </div>
+
+        <!-- BANNER -->
+        <div class="feature-banner animated" style="margin:8px 16px;">
+          <div style="background:linear-gradient(135deg,#0a2040,#1a4070);border-radius:20px;padding:20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:50px;opacity:0.3;">&#x1F4E1;</div>
+            <div class="banner-label">Подборка</div>
+            <div class="banner-title">Лучшие ИИ-помощники</div>
+            <div class="banner-sub">Gemini, ChatGPT, Claude и другие</div>
+            <div style="display:flex;gap:10px;">
+              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#1a3a6e,#4c6fff);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('gemini')">&#x1F4AB;</div>
+              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#0a3a0a,#30d158);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('chatgpt')">&#x1F916;</div>
+              <div style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,#3a2000,#ff9f0a);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;" onclick="openAppDetail('claude')">&#129302;</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-header animated">
+          <span class="section-title">Самое основное &rsaquo;</span>
+        </div>
+        <div class="app-list animated" id="appsTabList"></div>
+
+        <div class="section-header animated">
+          <span class="section-title">Покупки &rsaquo;</span>
+        </div>
+        <div class="h-scroll animated">
+          <div class="app-card-sm" onclick="openAppDetail('wb')">
+            <div class="app-icon grad-purple"><span style="font-size:28px;">&#x1F6CD;</span></div>
+            <div class="app-name">WB+</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('ozon')">
+            <div class="app-icon grad-blue"><span style="font-size:28px;">&#x1F4E6;</span></div>
+            <div class="app-name">OZON+++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('avito')">
+            <div class="app-icon grad-green"><span style="font-size:28px;">&#x1F3E0;</span></div>
+            <div class="app-name">Авито</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('yula')">
+            <div class="app-icon grad-orange"><span style="font-size:28px;">&#x1F4B0;</span></div>
+            <div class="app-name">Юла+++</div>
+          </div>
+        </div>
+
+        <div style="height:20px;"></div>
+      </div>
+    </div>
+
+    <!-- ARCADE TAB -->
+    <div class="tab-page" id="tabArcade">
+      <div class="scroll-content">
+        <div class="page-header animated">
+          <span class="page-title">Arcade</span>
+          <button class="avatar-btn" onclick="openAccount()">АП</button>
+        </div>
+
+        <div class="arcade-hero">
+          <div class="arcade-grid"></div>
+          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;">
+            <div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center;padding:20px;">
+              <div style="font-size:45px;animation:float1 3s ease-in-out infinite;">&#x1F47E;</div>
+              <div style="font-size:45px;animation:float2 3s ease-in-out infinite 0.5s;">&#x1F579;</div>
+              <div style="font-size:45px;animation:float1 3s ease-in-out infinite 1s;">&#x1F3AE;</div>
+              <div style="font-size:45px;animation:float2 3s ease-in-out infinite 1.5s;">&#x1F3B2;</div>
+              <div style="font-size:45px;animation:float1 3s ease-in-out infinite 2s;">&#x1F6F8;</div>
+            </div>
+          </div>
+        </div>
+
+        <style>
+          @keyframes float1 { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+          @keyframes float2 { 0%,100%{transform:translateY(-8px);} 50%{transform:translateY(4px);} }
+        </style>
+
+        <div class="arcade-title-section animated">
+          <div class="arcade-logo">&#xF8FF; Arcade</div>
+          <div class="arcade-headline">Без рекламы и встроенных покупок. Только игры</div>
+          <button class="arcade-offer-btn" onclick="showNotification('Arcade', 'Подписка активирована!', '&#x1F3AE;')">Принять предложение</button>
+          <div class="arcade-hint">Бесплатно 1 мес., затем 199,00 руб. в мес.</div>
+        </div>
+
+        <div class="section-header animated">
+          <span class="section-title">Все игры &rsaquo;</span>
+        </div>
+        <div class="h-scroll animated">
+          <div class="app-card-sm" onclick="openAppDetail('standoff')">
+            <div class="app-icon grad-red"><span style="font-size:28px;">&#x1F52B;</span></div>
+            <div class="app-name">Standoff 2 Plus</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('minecraft')">
+            <div class="app-icon grad-green"><span style="font-size:28px;">&#x26CF;</span></div>
+            <div class="app-name">Minecraft+</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('roblox')">
+            <div class="app-icon grad-blue"><span style="font-size:28px;">&#x25A0;</span></div>
+            <div class="app-name">Roblox+++</div>
+          </div>
+          <div class="app-card-sm" onclick="openAppDetail('games')">
+            <div class="app-icon grad-purple"><span style="font-size:28px;">&#x1F579;</span></div>
+            <div class="app-name">Games++++++++++++</div>
+          </div>
+        </div>
+
+        <!-- Arcade categories -->
+        <div class="section-header animated"><span class="section-title">Категории</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;" class="animated">
+          <div style="background:linear-gradient(135deg,#1a0a4a,#5e5ce6);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Все игры','&#x1F3AE;')">
+            <div style="font-size:16px;font-weight:700;">Все игры</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#2a1a00,#ff9f0a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Настольные','&#x265F;')">
+            <div style="font-size:16px;font-weight:700;">Настольные</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#0a2a0a,#30d158);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Приключения','&#x1F5FA;')">
+            <div style="font-size:16px;font-weight:700;">Приключения</div>
+          </div>
+          <div style="background:linear-gradient(135deg,#2a0a0a,#ff453a);border-radius:16px;padding:20px;cursor:pointer;min-height:90px;display:flex;align-items:flex-end;" onclick="showNotification('Arcade','Экшен','&#x1F525;')">
+            <div style="font-size:16px;font-weight:700;">Экшен</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH TAB -->
+    <div class="tab-page" id="tabSearch">
+      <div class="scroll-content">
+        <div class="page-header animated">
+          <span class="page-title">Поиск</span>
+          <button class="avatar-btn" onclick="openAccount()">АП</button>
+        </div>
+
+        <div class="search-bar animated">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="#8e8e93" stroke-width="1.5"/><path d="M10.5 10.5L14 14" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/></svg>
+          <input type="text" id="searchInput" placeholder="Игры, приложения и др." oninput="doSearch(this.value)">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2V16M9 2C9 2 6 5 6 9M9 2C9 2 12 5 12 9" stroke="#8e8e93" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+
+        <div id="searchResults" class="search-results"></div>
+
+        <div id="searchDefault">
+          <div class="section-header animated">
+            <span class="section-title">Рекомендуем &rsaquo;</span>
+          </div>
+          <div class="app-list animated" id="searchRecommend"></div>
+
+          <div class="section-header animated">
+            <span class="section-title">Обзор &rsaquo;</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:0 16px 20px;" class="animated">
+            <div style="background:linear-gradient(135deg,#1a3a6e,#2563eb);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
+              <div style="font-size:15px;font-weight:700;line-height:1.3;">Топ приложений по загрузкам</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#4a2a00,#d97706);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
+              <div style="font-size:15px;font-weight:700;line-height:1.3;">Топ игр по загрузкам</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#0a3a0a,#16a34a);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
+              <div style="font-size:15px;font-weight:700;line-height:1.3;">Платные приложения</div>
+            </div>
+            <div style="background:linear-gradient(135deg,#1a0a4a,#7c3aed);border-radius:16px;padding:20px;cursor:pointer;min-height:110px;display:flex;flex-direction:column;justify-content:flex-end;" onclick="showTopApps()">
+              <div style="font-size:15px;font-weight:700;line-height:1.3;">Новые игры</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabBtnToday" onclick="switchTab('Today')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>
+      </svg>
+      <span>Сегодня</span>
+    </button>
+    <button class="tab-btn" id="tabBtnGames" onclick="switchTab('Games')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2L2 19h20L12 2z"/><circle cx="12" cy="12" r="2"/>
+      </svg>
+      <span>Игры</span>
+    </button>
+    <button class="tab-btn" id="tabBtnApps" onclick="switchTab('Apps')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+      </svg>
+      <span>Приложения</span>
+    </button>
+    <button class="tab-btn" id="tabBtnArcade" onclick="switchTab('Arcade')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/>
+      </svg>
+      <span>Arcade</span>
+    </button>
+    <button class="tab-btn" id="tabBtnSearch" onclick="switchTab('Search')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <span>Поиск</span>
+    </button>
+  </div>
+</div>
+
+<!-- ACCOUNT MODAL -->
+<div class="modal-overlay" id="accountModal" onclick="closeAccountIfOutside(event)">
+  <div class="account-sheet glass-dark" id="accountSheet">
+    <div class="sheet-header">
+      <div class="sheet-title-row">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5"/><circle cx="14" cy="11" r="4" fill="white"/><path d="M5 24c0-5 4-8 9-8s9 3 9 8" stroke="white" stroke-width="1.5" fill="none"/></svg>
+        <span class="sheet-title">ApplePlus ID</span>
+      </div>
+      <button class="close-btn" onclick="closeAccount()">&#x2715;</button>
+    </div>
+
+    <!-- USER INFO -->
+    <div class="account-card">
+      <div class="account-row">
+        <div class="account-avatar" style="background:linear-gradient(135deg,#48484a,#636366);">АП</div>
+        <div class="account-info">
+          <div class="account-name" id="accName">ApplePlus User</div>
+          <div class="account-sub">Информация об аккаунте, платежи и настройки</div>
+        </div>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+    </div>
+
+    <!-- REGION -->
+    <div class="region-card">
+      <div class="region-label">Регион (изменить в 1 клик)</div>
+      <div class="region-grid" id="regionGrid"></div>
+    </div>
+
+    <!-- MENU -->
+    <div class="menu-card">
+      <div class="menu-row" onclick="showNotification('Аккаунт','Приложения обновлены!','&#x2705;')">
+        <span class="menu-label">Обновление приложений</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showPurchaseHistory()">
+        <span class="menu-label">Приложения и история покупок</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showNotification('Уведомления','Настройки уведомлений сохранены','&#x1F514;')">
+        <span class="menu-label">Уведомления</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showNotification('Отзывы','Ваш отзыв важен для нас!','&#x2B50;')">
+        <span class="menu-label">Оценки и отзывы</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showNotification('Рекомендации','Персонализация включена','&#x1F4A1;')">
+        <span class="menu-label">Персонализированные рекомендации</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showNotification('Безопасность','Двухфакторная аутентификация активна','&#x1F512;')">
+        <span class="menu-label">Безопасность</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+      <div class="menu-row" onclick="showNotification('Подписки','ApplePlus Pro активна','&#x1F451;')">
+        <span class="menu-label">Подписки</span>
+        <span class="chevron">&rsaquo;</span>
+      </div>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="sheet-actions">
+      <button class="sheet-action" onclick="showNotification('Баланс','Пополнение баланса','&#x20BD;')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v10M8 9h6a2 2 0 0 1 0 4H8"/></svg>
+        <span>Пополнить</span>
+      </button>
+      <button class="sheet-action" onclick="showNotification('Активация','Код принят!','&#x1F389;')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
+        <span>Активировать</span>
+      </button>
+      <button class="sheet-action" onclick="showNotification('Подарок','Код скопирован!','&#x1F381;')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="8" width="18" height="13" rx="2"/><path d="M12 8V3M8 8c0-2 2-5 4-5s4 3 4 5"/></svg>
+        <span>Отправить</span>
+      </button>
+    </div>
+
+    <!-- SIGN OUT -->
+    <div style="padding:16px;margin-top:8px;">
+      <button style="width:100%;padding:14px;background:rgba(255,59,48,0.15);border:1px solid rgba(255,59,48,0.3);border-radius:14px;color:#ff453a;font-size:17px;cursor:pointer;transition:all 0.2s;" onclick="signOut()">Выйти из ApplePlus ID</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP DETAIL OVERLAY -->
+<div id="appDetailOverlay">
+  <div class="detail-header">
+    <button class="detail-back" onclick="closeAppDetail()">
+      <svg width="10" height="16" viewBox="0 0 10 16" fill="none"><path d="M9 1L1 8L9 15" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Назад
+    </button>
+  </div>
+  <div class="detail-scroll" id="detailContent"></div>
+</div>
+
+<!-- HOME SCREEN OVERLAY -->
+<div id="homeScreenOverlay">
+  <div class="home-status">
+    <span></span>
+    <span class="status-time" id="homeStatusTime">16:00</span>
+  </div>
+  <div class="home-time" id="homeTime">16:00</div>
+  <div class="home-date" id="homeDate">Понедельник, 9 июня</div>
+
+  <div class="home-grid" id="homeGrid"></div>
+
+  <div class="home-dock">
+    <div class="dock-app" style="background:linear-gradient(135deg,#1a6e4a,#30d158);" onclick="launchDockApp('messages')">&#x1F4AC;</div>
+    <div class="dock-app" style="background:linear-gradient(135deg,#0a3069,#0a84ff);" onclick="launchDockApp('phone')">&#x1F4DE;</div>
+    <div class="dock-app" style="background:linear-gradient(135deg,#1a1a1a,#333);" onclick="launchDockApp('safari')">&#x1F9ED;</div>
+    <div class="dock-app" style="background:linear-gradient(135deg,#4a2a00,#ff9f0a);" onclick="launchDockApp('music')">&#x1F3B5;</div>
+  </div>
+
+  <button class="home-back-btn" onclick="closeHomeScreen()">Вернуться в AppStorePro+++</button>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification">
+  <div class="notif-icon" id="notifIcon">&#x2705;</div>
+  <div class="notif-text">
+    <div class="notif-title" id="notifTitle">Готово!</div>
+    <div class="notif-sub" id="notifSub">Действие выполнено</div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// APP DATA
+// ============================================================
+const APPS = {
+  gemini: {
+    name: 'Gemini Plus',
+    sub: 'ИИ-помощник нового поколения',
+    icon: '&#x1F4AB;',
+    grad: 'grad-blue',
+    rating: '4.9',
+    size: '87 МБ',
+    age: '4+',
+    desc: 'Gemini Plus — продвинутый ИИ-помощник с расширенными возможностями. Без ограничений по запросам, доступ к Gemini Ultra, поддержка изображений и файлов. Интеграция с Google Workspace.',
+    screenshots: ['&#x1F916;','&#x1F4AC;','&#x1F5BC;','&#x1F4CA;'],
+    category: 'ИИ',
+    version: '2.0 Pro',
+  },
+  chatgpt: {
+    name: 'ChatGPT Pro',
+    sub: 'GPT-4o без ограничений',
+    icon: '&#x1F916;',
+    grad: 'grad-green',
+    rating: '4.9',
+    size: '72 МБ',
+    age: '4+',
+    desc: 'ChatGPT Pro — полный доступ к GPT-4o без суточных лимитов. DALL-E 3, Code Interpreter, анализ данных, плагины. Работает без VPN.',
+    screenshots: ['&#x1F4AC;','&#x1F5BC;','&#x1F4BB;','&#x1F4CA;'],
+    category: 'ИИ',
+    version: '4.0 Pro',
+  },
+  tiktok: {
+    name: 'TikTok Pro',
+    sub: 'Без рекламы и ограничений',
+    icon: '&#127925;',
+    grad: 'grad-gray',
+    rating: '4.7',
+    size: '230 МБ',
+    age: '12+',
+    desc: 'TikTok Pro — версия без рекламы с расширенной аналитикой, скачиванием видео без водяного знака, доступом к закрытым функциям Creator Fund.',
+    screenshots: ['&#127916;','&#127925;','&#x1F4F1;','&#x1F4CA;'],
+    category: 'Развлечения',
+    version: '32.0 Pro',
+  },
+  claude: {
+    name: 'Claude+++',
+    sub: 'Claude 3.5 Opus без лимитов',
+    icon: '&#129302;',
+    grad: 'grad-orange',
+    rating: '4.8',
+    size: '65 МБ',
+    age: '4+',
+    desc: 'Claude+++ — доступ к мощнейшей модели Claude 3.5 Opus от Anthropic. Без ограничений по токенам, расширенный контекст 200K, работа с файлами и кодом.',
+    screenshots: ['&#x1F4AC;','&#x1F4DD;','&#x1F4BB;','&#129302;'],
+    category: 'ИИ',
+    version: '3.5 Opus',
+  },
+  roblox: {
+    name: 'Roblox+++',
+    sub: 'Миллионы игр без ограничений',
+    icon: '&#x25A0;',
+    grad: 'grad-blue',
+    rating: '4.6',
+    size: '310 МБ',
+    age: '4+',
+    desc: 'Roblox+++ — неограниченный Robux, доступ ко всем Premium-играм, без рекламы. Эксклюзивные аватары и предметы.',
+    screenshots: ['&#x1F3AE;','&#x1F30D;','&#x1F47E;','&#x1F3F0;'],
+    category: 'Игры',
+    version: '2.600 Plus',
+  },
+  youtube: {
+    name: 'YouTube Pro',
+    sub: 'Premium без подписки',
+    icon: '&#9654;',
+    grad: 'grad-red',
+    rating: '4.8',
+    size: '180 МБ',
+    age: '12+',
+    desc: 'YouTube Pro — всё, что даёт YouTube Premium бесплатно. Фоновое воспроизведение, скачивание, без рекламы, 4K, HDR, возможность включения SponsorBlock.',
+    screenshots: ['&#9654;','&#x1F4FA;','&#x1F3B5;','&#x1F4F1;'],
+    category: 'Развлечения',
+    version: '19.0 Pro',
+  },
+  whatsapp: {
+    name: 'WhatsApp Pro',
+    sub: 'Мессенджер с расширенными функциями',
+    icon: '&#x1F4AC;',
+    grad: 'grad-green',
+    rating: '4.7',
+    size: '145 МБ',
+    age: '4+',
+    desc: 'WhatsApp Pro — двойной аккаунт, скрытие статуса онлайн, расширенная конфиденциальность, скачивание статусов, кастомные темы.',
+    screenshots: ['&#x1F4AC;','&#x1F4F1;','&#x1F4F7;','&#x1F512;'],
+    category: 'Общение',
+    version: '23.0 Pro',
+  },
+  tiktokmod: {
+    name: 'TikTok MOD',
+    sub: 'Модифицированная версия',
+    icon: '&#127925;',
+    grad: 'grad-gray',
+    rating: '4.5',
+    size: '245 МБ',
+    age: '12+',
+    desc: 'TikTok MOD — всё возможности Pro + анти-бан, анти-репост, скачивание любых видео, обход региональных блокировок.',
+    screenshots: ['&#127916;','&#x1F3A5;','&#127925;','&#x1F4F1;'],
+    category: 'Развлечения',
+    version: 'MOD v31.5',
+  },
+  sberkids: {
+    name: 'СберКидс+',
+    sub: 'Банк для детей — расширенный',
+    icon: '&#x1F476;',
+    grad: 'grad-green',
+    rating: '4.8',
+    size: '92 МБ',
+    age: '4+',
+    desc: 'СберКидс+ — расширенная версия с дополнительными лимитами, родительским контролем, бонусными заданиями и повышенным кешбэком.',
+    screenshots: ['&#x1F476;','&#x1F4B3;','&#x1F3AF;','&#x2B50;'],
+    category: 'Финансы',
+    version: '5.0 Plus',
+  },
+  vk: {
+    name: 'VK Плюс',
+    sub: 'ВКонтакте без рекламы',
+    icon: '&#x1F195;',
+    grad: 'grad-blue',
+    rating: '4.6',
+    size: '176 МБ',
+    age: '12+',
+    desc: 'VK Плюс — ВКонтакте без рекламы, скачивание музыки и видео, скрытие статуса онлайн, доступ к VK Combo и VK Music без подписки.',
+    screenshots: ['&#x1F195;','&#x1F3B5;','&#x1F4F9;','&#x1F5BC;'],
+    category: 'Социальные',
+    version: '8.0 Plus',
+  },
+  yandex: {
+    name: 'Яндекс Про',
+    sub: 'Суперприложение с Плюсом',
+    icon: '&#x1F9ED;',
+    grad: 'grad-red',
+    rating: '4.7',
+    size: '210 МБ',
+    age: '4+',
+    desc: 'Яндекс Про — все сервисы Яндекса с активной подпиской Плюс. Музыка, Кино, Навигатор, Маркет, Такси — всё в одном.',
+    screenshots: ['&#x1F9ED;','&#x1F3B5;','&#x1F697;','&#x1F6D2;'],
+    category: 'Сервисы',
+    version: '24.0 Pro',
+  },
+  telegram: {
+    name: 'Telegram++++',
+    sub: 'Максимальная версия Telegram',
+    icon: '&#x2708;&#xFE0F;',
+    grad: 'grad-blue',
+    rating: '4.9',
+    size: '98 МБ',
+    age: '4+',
+    desc: 'Telegram++++ — Premium навсегда, без рекламы, 8 ГБ облака, скрытый статус, переводчик, расширенные реакции, эксклюзивные стикеры, API-боты без лимитов.',
+    screenshots: ['&#x2708;','&#x1F4AC;','&#x1F512;','&#x1F916;'],
+    category: 'Общение',
+    version: '10.0++++',
+  },
+  standoff: {
+    name: 'Stand-off 2 Plus',
+    sub: 'Шутер с читами',
+    icon: '&#x1F52B;',
+    grad: 'grad-red',
+    rating: '4.5',
+    size: '1.8 ГБ',
+    age: '16+',
+    desc: 'Stand-off 2 Plus — неограниченные монеты и золото, все скины, автоприцел, карты, турниры. Мультиплеер работает.',
+    screenshots: ['&#x1F52B;','&#x1F3AE;','&#x1F4A5;','&#x1F3C6;'],
+    category: 'Игры',
+    version: '1.35 Plus',
+  },
+  minecraft: {
+    name: 'Minecraft+',
+    sub: 'Полная версия без покупок',
+    icon: '&#x26CF;',
+    grad: 'grad-green',
+    rating: '4.9',
+    size: '650 МБ',
+    age: '7+',
+    desc: 'Minecraft+ — все DLC, скины, текстуры, мир-пак Marketplace разблокирован. Multiplayer сервера. Читмоды опционально.',
+    screenshots: ['&#x26CF;','&#x1F333;','&#x1F30D;','&#x1F6F8;'],
+    category: 'Игры',
+    version: '1.21 Plus',
+  },
+  insta: {
+    name: 'Insta+++',
+    sub: 'Instagram без ограничений',
+    icon: '&#x1F4F7;',
+    grad: 'grad-pink',
+    rating: '4.6',
+    size: '195 МБ',
+    age: '12+',
+    desc: 'Insta+++ — скачивание фото и видео, скрытие статуса онлайн, просмотр историй анонимно, инструменты для продвижения, без рекламы.',
+    screenshots: ['&#x1F4F7;','&#x1F4F9;','&#x2764;','&#x1F30D;'],
+    category: 'Фото',
+    version: '320 Plus',
+  },
+  wb: {
+    name: 'WB+',
+    sub: 'Wildberries с бонусами',
+    icon: '&#x1F6CD;',
+    grad: 'grad-purple',
+    rating: '4.5',
+    size: '118 МБ',
+    age: '4+',
+    desc: 'WB+ — Wildberries с расширенным кешбэком до 30%, доступ к закрытым распродажам, аналитика цен, сравнение товаров.',
+    screenshots: ['&#x1F6CD;','&#x1F4E6;','&#x1F4B0;','&#x2B50;'],
+    category: 'Покупки',
+    version: '6.0 Plus',
+  },
+  ozon: {
+    name: 'OZON+++',
+    sub: 'OZON Premium навсегда',
+    icon: '&#x1F4E6;',
+    grad: 'grad-blue',
+    rating: '4.6',
+    size: '122 МБ',
+    age: '4+',
+    desc: 'OZON+++ — OZON Premium без оплаты, повышенный кешбэк, приоритетная доставка, скрытые распродажи, аналитика цен.',
+    screenshots: ['&#x1F4E6;','&#x1F6D2;','&#x1F4B3;','&#x2B50;'],
+    category: 'Покупки',
+    version: '17.0+++',
+  },
+  avito: {
+    name: 'Авито',
+    sub: 'Объявления без лимитов',
+    icon: '&#x1F3E0;',
+    grad: 'grad-green',
+    rating: '4.5',
+    size: '88 МБ',
+    age: '4+',
+    desc: 'Авито — неограниченные объявления, доступ к скрытым контактам без оплаты, история изменения цен, расширенный поиск.',
+    screenshots: ['&#x1F3E0;','&#x1F697;','&#x1F4BB;','&#x1F4F1;'],
+    category: 'Сервисы',
+    version: '12.5 Pro',
+  },
+  yula: {
+    name: 'Юла+++',
+    sub: 'Доска объявлений Pro',
+    icon: '&#x1F4B0;',
+    grad: 'grad-orange',
+    rating: '4.3',
+    size: '76 МБ',
+    age: '4+',
+    desc: 'Юла+++ — безлимитные объявления, поднятие в топ бесплатно, расширенный поиск по скрытым объявлениям.',
+    screenshots: ['&#x1F4B0;','&#x1F3E0;','&#x1F4E6;','&#x1F697;'],
+    category: 'Покупки',
+    version: '4.0+++',
+  },
+  esign: {
+    name: 'ESign+++',
+    sub: 'Установка .ipa без ПК',
+    icon: '&#x270D;',
+    grad: 'grad-purple',
+    rating: '4.8',
+    size: '24 МБ',
+    age: '4+',
+    desc: 'ESign+++ — самый мощный подписчик приложений прямо на устройстве. Импорт сертификатов, переподпись IPA, сборка приложений. Без компьютера.',
+    screenshots: ['&#x270D;','&#x1F4DD;','&#x2699;','&#x1F512;'],
+    category: 'Утилиты',
+    version: '5.0+++',
+  },
+  jailbreak: {
+    name: 'Jailbreak +++ ',
+    sub: 'iOS 26 - iOS 27 Developer Preview',
+    icon: '&#x1F513;',
+    grad: 'grad-green',
+    rating: '4.9',
+    size: '48 МБ',
+    age: '17+',
+    desc: 'Jailbreak+++ — поддержка iOS 26 и iOS 27 Developer Preview. Полный root-доступ, Cydia, Sileo, твики, темы, удаление ограничений Apple. Безопасный и стабильный.',
+    screenshots: ['&#x1F513;','&#x2699;','&#x1F4BB;','&#x1F30D;'],
+    category: 'Утилиты',
+    version: '26.0+++',
+  },
+  shazam: {
+    name: 'Shazam*',
+    sub: 'Распознавание музыки Pro',
+    icon: '&#x1F3B5;',
+    grad: 'grad-blue',
+    rating: '4.8',
+    size: '65 МБ',
+    age: '4+',
+    desc: 'Shazam* — расширенная версия с историей, синхронизацией плейлистов, оффлайн-режимом и интеграцией с Apple Music и Spotify без ограничений.',
+    screenshots: ['&#x1F3B5;','&#x1F399;','&#x1F4CA;','&#x2B50;'],
+    category: 'Музыка',
+    version: '15.0 Star',
+  },
+  applemusic: {
+    name: 'Apple Music+++',
+    sub: 'Безлимитная музыка',
+    icon: '&#x1F3B6;',
+    grad: 'grad-red',
+    rating: '4.8',
+    size: '76 МБ',
+    age: '4+',
+    desc: 'Apple Music+++ — 100 млн треков без подписки, скачивание, пространственный звук, Lossless, Dolby Atmos. Семейный план навсегда.',
+    screenshots: ['&#x1F3B6;','&#x1F399;','&#x1F4FB;','&#x2764;'],
+    category: 'Музыка',
+    version: '4.0+++',
+  },
+  sertifikat: {
+    name: 'СертификатIOS+++',
+    sub: 'Управление сертификатами',
+    icon: '&#x1F4DC;',
+    grad: 'grad-teal',
+    rating: '4.7',
+    size: '18 МБ',
+    age: '4+',
+    desc: 'СертификатIOS+++ — создание и управление iOS-сертификатами прямо на устройстве. Генерация P12, CSR, профилей. Обход отзыва сертификатов.',
+    screenshots: ['&#x1F4DC;','&#x1F512;','&#x2699;','&#x1F4BB;'],
+    category: 'Утилиты',
+    version: '3.0+++',
+  },
+  games: {
+    name: 'Games++++++++++++',
+    sub: 'Всё лучшее в одном',
+    icon: '&#x1F579;',
+    grad: 'grad-purple',
+    rating: '4.9',
+    size: '2.1 ГБ',
+    age: '4+',
+    desc: 'Games+++++++++++++ — суперколлекция из 500+ игр с читами, неограниченными ресурсами, разблокированными уровнями и Premium-контентом.',
+    screenshots: ['&#x1F579;','&#x1F3AE;','&#x1F3C6;','&#x1F4A5;'],
+    category: 'Игры',
+    version: 'MEGA Edition',
+  },
+  xiaomi: {
+    name: 'Xiaomi Sound Pocket',
+    sub: 'Аудио от Xiaomi',
+    icon: '&#x1F50A;',
+    grad: 'grad-orange',
+    rating: '4.4',
+    size: '42 МБ',
+    age: '4+',
+    desc: 'Xiaomi Sound Pocket — приложение для управления колонками Xiaomi, эквалайзер, просмотр заряда, подключение нескольких устройств.',
+    screenshots: ['&#x1F50A;','&#x1F3B5;','&#x1F4F1;','&#x2699;'],
+    category: 'Музыка',
+    version: '1.5 Pro',
+  },
+  // EXTRA APPS
+  spotify: {
+    name: 'Spotify+++',
+    sub: 'Музыка без ограничений',
+    icon: '&#x1F49A;',
+    grad: 'grad-green',
+    rating: '4.8',
+    size: '136 МБ',
+    age: '4+',
+    desc: 'Spotify+++ — Premium навсегда без подписки. Без рекламы, оффлайн, неограниченные пропуски, высокое качество звука.',
+    screenshots: ['&#x1F49A;','&#x1F3B5;','&#x1F4FB;','&#x1F4CA;'],
+    category: 'Музыка',
+    version: '8.9 Plus',
+  },
+  netflix: {
+    name: 'Netflix Pro',
+    sub: 'Кино без подписки',
+    icon: '&#x1F3AC;',
+    grad: 'grad-red',
+    rating: '4.7',
+    size: '188 МБ',
+    age: '16+',
+    desc: 'Netflix Pro — доступ ко всему контенту без подписки, скачивание, 4K Ultra HD, все профили, смена региона в 1 клик.',
+    screenshots: ['&#x1F3AC;','&#x1F4FA;','&#x2B50;','&#x1F30D;'],
+    category: 'Развлечения',
+    version: '8.0 Pro',
+  },
+  maps: {
+    name: 'Яндекс Карты Pro',
+    sub: 'Навигация без рекламы',
+    icon: '&#x1F5FA;',
+    grad: 'grad-red',
+    rating: '4.7',
+    size: '156 МБ',
+    age: '4+',
+    desc: 'Яндекс Карты Pro — без рекламы, оффлайн-карты любого региона, расширенные маршруты, пробки в реальном времени.',
+    screenshots: ['&#x1F5FA;','&#x1F697;','&#x1F6F6;','&#x1F4CD;'],
+    category: 'Навигация',
+    version: '19.0 Pro',
+  },
+  bank: {
+    name: 'СберБанк Pro',
+    sub: 'Банк без лимитов',
+    icon: '&#x1F4B3;',
+    grad: 'grad-green',
+    rating: '4.6',
+    size: '110 МБ',
+    age: '12+',
+    desc: 'СберБанк Pro — снятие лимитов на переводы, расширенная аналитика расходов, автоплатежи, эксклюзивные предложения Прайм.',
+    screenshots: ['&#x1F4B3;','&#x1F4B0;','&#x1F4CA;','&#x1F512;'],
+    category: 'Финансы',
+    version: '15.5 Pro',
+  },
+};
+
+const appIds = Object.keys(APPS);
+
+// ============================================================
+// INSTALL STATE
+// ============================================================
+const installed = new Set();
+const homeApps = [];
+
+// ============================================================
+// LOGIN
+// ============================================================
+function doLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const pass = document.getElementById('loginPass').value;
+  if (!email || !pass) {
+    shakeLogo();
+    return;
+  }
+  // Extract name from email
+  const namePart = email.split('@')[0];
+  const displayName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+  document.getElementById('accName').textContent = displayName || 'ApplePlus User';
+
+  // Show congrats
+  showScreen('congratsScreen');
+}
+
+function shakeLogo() {
+  const logo = document.querySelector('.login-logo');
+  logo.style.animation = 'shake 0.4s ease';
+  setTimeout(() => { logo.style.animation = 'logoPulse 3s ease-in-out infinite'; }, 400);
+}
+
+const shakeCSS = document.createElement('style');
+shakeCSS.textContent = '@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)} }';
+document.head.appendChild(shakeCSS);
+
+function gotoMain() {
+  showScreen(null); // hide all
+  document.getElementById('mainApp').classList.add('active');
+  initMainApp();
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.display = 'none';
+  });
+  if (id) {
+    const el = document.getElementById(id);
+    el.style.display = 'flex';
+    requestAnimationFrame(() => el.classList.add('active'));
+  }
+}
+
+// ============================================================
+// CLOCK
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  const t = now.toLocaleTimeString('ru', {hour:'2-digit', minute:'2-digit'});
+  const d = now.toLocaleDateString('ru', {weekday:'long', day:'numeric', month:'long'});
+  const el = document.getElementById('statusTime');
+  if (el) el.textContent = t;
+  const ht = document.getElementById('homeTime');
+  if (ht) ht.textContent = t;
+  const hst = document.getElementById('homeStatusTime');
+  if (hst) hst.textContent = t;
+  const hd = document.getElementById('homeDate');
+  if (hd) hd.textContent = d.charAt(0).toUpperCase() + d.slice(1);
+}
+
+// ============================================================
+// INIT MAIN APP
+// ============================================================
+function initMainApp() {
+  // Main app list
+  buildAppList('mainAppList', ['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat']);
+  // Games
+  buildAppList('gamesAppList', ['roblox','standoff','minecraft','games','tiktokmod','jailbreak']);
+  // Apps tab
+  buildAppList('appsTabList', ['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','maps','bank','xiaomi','shazam','applemusic']);
+  // Search recommend
+  buildAppList('searchRecommend', ['gemini','chatgpt','claude','telegram','roblox','youtube'], true);
+  // Region grid
+  buildRegionGrid();
+}
+
+function buildAppList(containerId, ids, small) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  ids.forEach(id => {
+    const app = APPS[id];
+    if (!app) return;
+    const isInst = installed.has(id);
+    const row = document.createElement('div');
+    row.className = 'app-row';
+    row.innerHTML = `
+      <div class="app-icon ${app.grad}" onclick="openAppDetail('${id}')">${app.icon}</div>
+      <div class="app-info" onclick="openAppDetail('${id}')">
+        <div class="app-name">${app.name}</div>
+        <div class="app-desc">${app.sub}</div>
+        ${!small ? `<div class="app-desc-small">Встроенные покупки</div>` : ''}
+      </div>
+      <div>
+        <button class="dl-btn" id="dlbtn-${id}-${containerId}" onclick="installAppBtn('${id}',this)">${isInst ? 'Открыть' : 'Загрузить'}</button>
+        ${!small && isInst ? '<div style="font-size:10px;color:var(--sub);text-align:center;margin-top:2px;">Установлено</div>' : ''}
+      </div>
+    `;
+    container.appendChild(row);
+    // Divider
+    const div = document.createElement('div');
+    div.style.cssText = 'height:1px;background:var(--border);margin-left:74px;';
+    container.appendChild(div);
+  });
+}
+
+// ============================================================
+// TAB SWITCHING
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab' + name).classList.add('active');
+  document.getElementById('tabBtn' + name).classList.add('active');
+}
+
+// ============================================================
+// APP DETAIL
+// ============================================================
+function openAppDetail(id) {
+  const app = APPS[id];
+  if (!app) return;
+  const isInst = installed.has(id);
+  const overlay = document.getElementById('appDetailOverlay');
+  const content = document.getElementById('detailContent');
+
+  // Screenshots HTML
+  let screenshotsHtml = app.screenshots.map(s => `
+    <div class="screenshot">
+      <div style="font-size:60px;text-align:center;">${s}</div>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:11px;color:rgba(255,255,255,0.4);">${app.name}</div>
+    </div>
+  `).join('');
+
+  // Stars
+  const stars = '&#x2B50;'.repeat(Math.floor(parseFloat(app.rating)));
+
+  content.innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-icon ${app.grad}">${app.icon}</div>
+      <div class="detail-meta">
+        <div class="detail-app-name">${app.name}</div>
+        <div class="detail-app-sub">${app.sub}</div>
+        <button class="install-btn ${isInst ? 'installed' : ''}" id="installBtn-${id}" onclick="startInstall('${id}', this)">
+          ${isInst ? 'Открыть' : 'Установить'}
+        </button>
+        <div class="progress-wrap" id="progress-${id}" style="display:${isInst ? 'none':'none'};">
+          <div class="progress-bar" id="progressBar-${id}"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-stats">
+      <div class="stat-item">
+        <div class="stat-val">${app.rating}</div>
+        <div class="stat-key">Рейтинг</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">${app.category}</div>
+        <div class="stat-key">Категория</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">${app.size}</div>
+        <div class="stat-key">Размер</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-val">${app.age}</div>
+        <div class="stat-key">Возраст</div>
+      </div>
+    </div>
+
+    <div style="padding:0 20px 16px;">
+      <div style="font-size:13px;color:var(--sub);">${stars} ${app.rating} · Версия ${app.version}</div>
+    </div>
+
+    <div style="padding:0 20px 10px;font-size:20px;font-weight:700;">Скриншоты</div>
+    <div class="screenshots">${screenshotsHtml}</div>
+
+    <div class="detail-desc">
+      <div class="detail-desc-title">Описание</div>
+      ${app.desc}
+    </div>
+
+    <div style="margin:0 20px 20px;padding:14px 16px;background:rgba(44,44,46,0.5);border-radius:14px;border:1px solid rgba(255,255,255,0.08);">
+      <div style="font-size:13px;color:var(--sub);margin-bottom:6px;">ИНФОРМАЦИЯ</div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="color:var(--sub);">Версия</span><span>${app.version}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="color:var(--sub);">Размер</span><span>${app.size}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+        <span style="color:var(--sub);">Возраст</span><span>${app.age}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 0;">
+        <span style="color:var(--sub);">Разработчик</span><span>AppStorePro+++</span>
+      </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div style="padding:0 20px 10px;font-size:20px;font-weight:700;">Отзывы</div>
+    <div style="padding:0 20px 20px;">
+      ${generateReviews(app.name)}
+    </div>
+  `;
+
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.classList.add('open'));
+}
+
+function generateReviews(appName) {
+  const reviews = [
+    {name:'Иван_Pro', stars:5, text:'Отличное приложение! Работает лучше оригинала. Рекомендую всем!'},
+    {name:'user_2024', stars:5, text:`${appName} просто огонь! Скачал — не пожалел ни разу`},
+    {name:'testuser_ru', stars:4, text:'Хорошо работает, иногда вылетает, но в целом супер'},
+  ];
+  return reviews.map(r => `
+    <div style="padding:14px;background:rgba(44,44,46,0.4);border-radius:14px;margin-bottom:10px;border:1px solid rgba(255,255,255,0.06);">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:14px;font-weight:600;">${r.name}</span>
+        <span style="color:rgba(255,210,0,0.9);font-size:13px;">${'★'.repeat(r.stars)}</span>
+      </div>
+      <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.4;">${r.text}</div>
+    </div>
+  `).join('');
+}
+
+function closeAppDetail() {
+  const overlay = document.getElementById('appDetailOverlay');
+  overlay.classList.remove('open');
+  setTimeout(() => { overlay.style.display = 'none'; }, 400);
+}
+
+// ============================================================
+// INSTALL
+// ============================================================
+function startInstall(id, btn) {
+  if (installed.has(id)) {
+    openInstalledApp(id);
+    return;
+  }
+
+  const app = APPS[id];
+  btn.classList.add('installing');
+  btn.textContent = 'Загрузка...';
+  btn.disabled = true;
+
+  const pw = document.getElementById('progress-' + id);
+  const pb = document.getElementById('progressBar-' + id);
+  if (pw && pb) {
+    pw.style.display = 'block';
+    let prog = 0;
+    const interval = setInterval(() => {
+      prog += Math.random() * 8 + 3;
+      if (prog >= 100) {
+        prog = 100;
+        clearInterval(interval);
+        finishInstall(id, btn, pw);
+      }
+      pb.style.width = prog + '%';
+    }, 120);
+  } else {
+    setTimeout(() => finishInstall(id, btn, null), 3000);
+  }
+
+  playInstallSound();
+}
+
+function finishInstall(id, btn, progressWrap) {
+  installed.add(id);
+  const app = APPS[id];
+  btn.classList.remove('installing');
+  btn.classList.add('installed');
+  btn.textContent = 'Открыть';
+  btn.disabled = false;
+  if (progressWrap) progressWrap.style.display = 'none';
+
+  // Add to home screen
+  addToHomeScreen(id);
+
+  // Show notification
+  showNotification(app.name, 'Приложение установлено!', app.icon);
+
+  // Update all list buttons
+  document.querySelectorAll(`[id^="dlbtn-${id}"]`).forEach(b => {
+    b.textContent = 'Открыть';
+  });
+
+  // Rebuild lists
+  setTimeout(rebuildAllLists, 300);
+}
+
+function installAppBtn(id, btn) {
+  if (installed.has(id)) {
+    openInstalledApp(id);
+    return;
+  }
+  btn.textContent = '...';
+  btn.disabled = true;
+  playInstallSound();
+
+  let prog = 0;
+  const interval = setInterval(() => {
+    prog += 12;
+    if (prog >= 100) {
+      clearInterval(interval);
+      installed.add(id);
+      addToHomeScreen(id);
+      btn.textContent = 'Открыть';
+      btn.disabled = false;
+      showNotification(APPS[id].name, 'Установлено!', APPS[id].icon);
+      rebuildAllLists();
+    }
+  }, 200);
+}
+
+function addToHomeScreen(id) {
+  if (!homeApps.includes(id)) {
+    homeApps.push(id);
+    rebuildHomeGrid();
+  }
+}
+
+function rebuildHomeGrid() {
+  const grid = document.getElementById('homeGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  homeApps.forEach(id => {
+    const app = APPS[id];
+    if (!app) return;
+    const el = document.createElement('div');
+    el.className = 'home-app';
+    el.innerHTML = `
+      <div class="home-app-icon ${app.grad}" onclick="launchApp('${id}')">${app.icon}</div>
+      <div class="home-app-name">${app.name.substring(0,14)}</div>
+    `;
+    grid.appendChild(el);
+  });
+}
+
+function rebuildAllLists() {
+  buildAppList('mainAppList', ['gemini','chatgpt','claude','telegram','whatsapp','youtube','tiktok','insta','esign','sertifikat']);
+  buildAppList('gamesAppList', ['roblox','standoff','minecraft','games','tiktokmod','jailbreak']);
+  buildAppList('appsTabList', ['whatsapp','telegram','vk','sberkids','wb','ozon','spotify','netflix','maps','bank','xiaomi','shazam','applemusic']);
+  buildAppList('searchRecommend', ['gemini','chatgpt','claude','telegram','roblox','youtube'], true);
+}
+
+function openInstalledApp(id) {
+  openHomeScreen();
+}
+
+// ============================================================
+// INSTALL SOUND
+// ============================================================
+function playInstallSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523, 659, 784, 1046];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = freq;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.15, ctx.currentTime + i * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.08 + 0.15);
+      osc.start(ctx.currentTime + i * 0.08);
+      osc.stop(ctx.currentTime + i * 0.08 + 0.15);
+    });
+  } catch(e) {}
+}
+
+function playClickSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.value = 440;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.1);
+  } catch(e) {}
+}
+
+// ============================================================
+// NOTIFICATION
+// ============================================================
+let notifTimer;
+function showNotification(title, sub, icon) {
+  const n = document.getElementById('notification');
+  document.getElementById('notifTitle').textContent = title;
+  document.getElementById('notifSub').textContent = sub;
+  document.getElementById('notifIcon').innerHTML = icon || '&#x2705;';
+  n.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => n.classList.remove('show'), 3000);
+}
+
+// ============================================================
+// ACCOUNT
+// ============================================================
+function openAccount() {
+  const modal = document.getElementById('accountModal');
+  const sheet = document.getElementById('accountSheet');
+  modal.classList.add('open');
+  requestAnimationFrame(() => sheet.classList.add('open'));
+}
+
+function closeAccount() {
+  const modal = document.getElementById('accountModal');
+  const sheet = document.getElementById('accountSheet');
+  sheet.classList.remove('open');
+  setTimeout(() => modal.classList.remove('open'), 400);
+}
+
+function closeAccountIfOutside(e) {
+  if (e.target === document.getElementById('accountModal')) closeAccount();
+}
+
+function signOut() {
+  closeAccount();
+  setTimeout(() => {
+    document.getElementById('mainApp').classList.remove('active');
+    installed.clear();
+    homeApps.length = 0;
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPass').value = '';
+    showScreen('loginScreen');
+  }, 300);
+}
+
+function showPurchaseHistory() {
+  showNotification('История покупок', installed.size + ' приложений установлено', '&#x1F4CB;');
+}
+
+// ============================================================
+// REGION
+// ============================================================
+const regions = ['Россия','США','Великобритания','Германия','Япония','Китай','Казахстан','Беларусь','Украина','Франция','Турция','ОАЭ'];
+let selectedRegion = 'Россия';
+
+function buildRegionGrid() {
+  const grid = document.getElementById('regionGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  regions.forEach(r => {
+    const chip = document.createElement('div');
+    chip.className = 'region-chip' + (r === selectedRegion ? ' selected' : '');
+    chip.textContent = r;
+    chip.onclick = () => {
+      selectedRegion = r;
+      buildRegionGrid();
+      showNotification('Регион изменён', r, '&#x1F30D;');
+      playClickSound();
+    };
+    grid.appendChild(chip);
+  });
+}
+
+// ============================================================
+// HOME SCREEN
+// ============================================================
+function openHomeScreen() {
+  rebuildHomeGrid();
+  document.getElementById('homeScreenOverlay').classList.add('open');
+}
+
+function closeHomeScreen() {
+  document.getElementById('homeScreenOverlay').classList.remove('open');
+}
+
+function launchApp(id) {
+  const app = APPS[id];
+  if (!app) return;
+  playClickSound();
+  showNotification(app.name, 'Приложение запущено!', app.icon);
+}
+
+function launchDockApp(type) {
+  const names = {messages:'Сообщения', phone:'Телефон', safari:'Safari', music:'Музыка'};
+  showNotification(names[type] || type, 'Открыто', '&#x1F4F1;');
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+function doSearch(query) {
+  const resultsEl = document.getElementById('searchResults');
+  const defaultEl = document.getElementById('searchDefault');
+
+  if (!query) {
+    resultsEl.classList.remove('active');
+    defaultEl.style.display = 'block';
+    return;
+  }
+
+  defaultEl.style.display = 'none';
+  resultsEl.classList.add('active');
+
+  const q = query.toLowerCase();
+  const matches = appIds.filter(id => {
+    const app = APPS[id];
+    return app.name.toLowerCase().includes(q) || app.sub.toLowerCase().includes(q) || app.category.toLowerCase().includes(q);
+  });
+
+  if (matches.length === 0) {
+    resultsEl.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--sub);">Ничего не найдено по запросу "${query}"</div>`;
+    return;
+  }
+
+  resultsEl.innerHTML = `<div class="section-header"><span class="section-title">Результаты (${matches.length})</span></div><div class="app-list" id="searchResultsList"></div>`;
+  buildAppList('searchResultsList', matches);
+}
+
+function showTopApps() {
+  document.getElementById('searchInput').value = '';
+  buildAppList('searchResultsList', appIds.slice(0, 10));
+  document.getElementById('searchResults').classList.add('active');
+  document.getElementById('searchResults').innerHTML = `<div class="section-header"><span class="section-title">Топ загрузок</span></div><div class="app-list" id="searchResultsList"></div>`;
+  buildAppList('searchResultsList', appIds.slice(0, 15));
+  document.getElementById('searchDefault').style.display = 'none';
+}
+
+// ============================================================
+// FIRST TIME SCREEN SHOW
+// ============================================================
+document.getElementById('loginScreen').style.display = 'flex';
+document.getElementById('loginScreen').style.opacity = '1';
+document.getElementById('loginScreen').style.transform = 'translateY(0)';
+</script>
+</body>
+</html>
